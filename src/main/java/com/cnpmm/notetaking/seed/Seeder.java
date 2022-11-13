@@ -20,7 +20,9 @@ public class Seeder {
         return args -> {
             Role userRole = new Role(null,"USER_ROLE");
             Role adminRole = new Role(null, "ADMIN_ROLE");
-            roleRepository.saveAll(List.of(userRole,adminRole));
+            if (roleRepository.findRoleByName(userRole.getName()) == null && roleRepository.findRoleByName(adminRole.getName()) == null){
+                roleRepository.saveAll(List.of(userRole,adminRole));
+            }
             User tinnguyen = new User(
                     "tinnguyen2682k1@gmail.com",
                     "nguyenmaihoang742001"
@@ -35,8 +37,12 @@ public class Seeder {
             onlyAdminRole.add(userRole);
             tinnguyen.setRoles(onlyUserRole);
             maihoang.setRoles(onlyAdminRole);
-            userService.addNewUser(tinnguyen);
-            userService.addNewUser(maihoang);
+            if (userService.findByEmail(tinnguyen.getEmail()) == null){
+                userService.addNewUser(tinnguyen);
+            }
+            if (userService.findByEmail(maihoang.getEmail()) == null){
+                userService.addNewUser(maihoang);
+            }
 
         };
     }
