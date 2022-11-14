@@ -14,6 +14,7 @@
         var refreshToken = localStorage.getItem("refresh_token");
 
         if (accessToken){
+            window.location.href = "/dashboard?token=" + accessToken;
             $.ajax({
                 url: "/dashboard",
                 type: "GET",
@@ -23,10 +24,10 @@
                     xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
                 },
                 success: function (){
-                    window.location.href = "/dashboard"
+                    window.location.href = "/dashboard?token=" + accessToken;
                 },
                 fail: function(xhr, textStatus, errorThrown) {
-
+                    console.log("stop");
                 }
             })
         }
@@ -40,16 +41,7 @@
                 success: function (data){
                     localStorage.setItem("access_token", data.access_token);
                     localStorage.setItem("refresh_token", data.refresh_token);
-                    $.ajax({
-                        url: "/dashboard",
-                        type: 'GET',
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("access_token"));
-                        },
-                        success: function (){
-                            window.location.href = "/dashboard"
-                        }
-                    })
+                    window.location.href = "/dashboard" + data.access_token;
                 },
                 fail: function(xhr, textStatus, errorThrown) {
 
@@ -139,17 +131,7 @@
             .done(function (data) {
                 localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("refresh_token", data.refresh_token);
-
-                $.ajax({
-                    url: "/dashboard",
-                    type: "GET",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("access_token"));
-                    },
-                    success: function (){
-                        window.location.href = "/dashboard"
-                    }
-                })
+                window.location.href = "/dashboard" + data.access_token;
             })
             .fail(function (data){
             $("#error-message").html(data.responseJSON.message);
