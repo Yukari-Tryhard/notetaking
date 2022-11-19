@@ -12,8 +12,5 @@ public class AppController {
         return "dashboard";
     }
 
-    @GetMapping("signup")
-    public String Signup(){
-        return "signup";
-    }
+
 }

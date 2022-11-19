@@ -12,4 +12,9 @@ public class AuthenticationController {
     public String Login() {
         return "login";
     }
+
+    @GetMapping("signup")
+    public String Signup(){
+        return "signup";
+    }
 }

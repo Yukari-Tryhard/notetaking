@@ -72,8 +72,12 @@
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password">
             </div>
+            <div class="login-field">
+                <label for="password">Confirm your password</label>
+                <input id="password" name="password" type="password">
+            </div>
             <div id="error-message"></div>
-            <button id="login-button">Login</button>
+            <button id="login-button">Create account</button>
         </form>
     </div>
 </div>
@@ -88,6 +92,7 @@
         background-size: cover;
         width: 100vw;
         height: 100vh;
+        font-family: sans-serif;
     }
     .float{
         position: absolute;
@@ -111,13 +116,13 @@
         aspect-ratio: 1;
     }
     .login-container{
-        box-sizing: border-box;
 
+        box-sizing: border-box;
         position: absolute;
         width: 40vw;
-        height: 65vh;
+        height: 80vh;
         left: 30vw;
-        top: 18vh;
+        top: 10vh;
 
         /* From https://css.glass */
         background: rgba(255, 255, 255, 0.1);
@@ -127,6 +132,11 @@
         -webkit-backdrop-filter: blur(3.8px);
         border: 1px solid rgba(255, 255, 255, 0.16);
         z-index: 999;
+    }
+    #login-form{
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
     }
     .login-header{
         padding-top: 65px;
@@ -144,22 +154,17 @@
         background-clip: text;
         text-fill-color: transparent;
     }
-    .login-sub-header{
-        color: white;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    #login-form{
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%);
-    }
     .login-field{
 
         color: white;
 
         display: flex;
         flex-direction: column;
+    }
+    .login-sub-header{
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
     }
     #login-button{
         color: white;
@@ -174,11 +179,11 @@
 
         top: 80%;
         left: 50%;
-
+        transform: translate(50%);
     }
     #login-button:hover{
         background: #6A37DD;
-    }
+     }
     input{
         height: 35px;
         width: 300px;
@@ -204,6 +209,10 @@
         color: #6A37DD;
         cursor: pointer;
     }
+
+
+
+
 </style>
 <script>
     $("#login-form").submit(function (e) {
@@ -228,9 +237,9 @@
                 })
             })
             .fail(function (data){
-            $("#error-message").html(data.responseJSON.message);
-            console.log(data);
-        })
+                $("#error-message").html(data.responseJSON.message);
+                console.log(data);
+            })
     })
 </script>
 </html>
