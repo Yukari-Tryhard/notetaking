@@ -50,18 +50,20 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     }
                 }
                 try {
-                    Algorithm algorithm = Algorithm.HMAC256("HokiTuki".getBytes());
-                    JWTVerifier verifier = JWT.require(algorithm).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
-                    String email = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    if (token != ""){
+                        Algorithm algorithm = Algorithm.HMAC256("HokiTuki".getBytes());
+                        JWTVerifier verifier = JWT.require(algorithm).build();
+                        DecodedJWT decodedJWT = verifier.verify(token);
+                        String email = decodedJWT.getSubject();
+                        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
 
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role -> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email,null,authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                        stream(roles).forEach(role -> {
+                            authorities.add(new SimpleGrantedAuthority(role));
+                        });
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email,null,authorities);
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
                     filterChain.doFilter(request,response);
                 }catch (Exception ex){
 

@@ -133,7 +133,6 @@
         background: linear-gradient(239.47deg, #FF62E6 13.86%, #48C7FE 68.55%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-clip: text;
         text-fill-color: transparent;
     }
     .login-sub-header{
@@ -205,13 +204,12 @@
         // debugger;
         $.post("/api/v1/authenticate",{email: email, password: password})
             .done(function (data) {
-                localStorage.setItem("access_token", data.access_token);
-                localStorage.setItem("refresh_token", data.refresh_token);
-                window.location.href = "/dashboard" + data.access_token;
+                alert("success");
+                window.location.href = "/dashboard"
             })
             .fail(function (data){
-            $("#error-message").html(data.responseJSON.message);
-            console.log(data);
+                alert("fail")
+                console.log(data);
         })
     })
 </script>

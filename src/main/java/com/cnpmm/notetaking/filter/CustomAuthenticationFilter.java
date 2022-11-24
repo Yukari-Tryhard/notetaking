@@ -52,7 +52,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 //        tokens.put("access_token",accessToken);
 //        tokens.put("refresh_token",refreshToken);
         final Boolean useSecureCookie = false;
-        final int expiryTime = 60 * 60 * 24;  // 24h in seconds
+        final int expiryTime = 60 * 60 * 24 * 60;  // 24h in seconds
         final String cookiePath = "/";
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
@@ -67,8 +67,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
-
-        response.setContentType(APPLICATION_JSON_VALUE);
 //        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 

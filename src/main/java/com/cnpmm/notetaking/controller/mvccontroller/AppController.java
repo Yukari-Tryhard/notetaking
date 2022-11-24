@@ -10,19 +10,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/")
 public class AppController {
-    @GetMapping("dashboard")
-    public String Dashboard(@RequestParam String token) {
-        log.info("token: " + token);
-        if (token != "000"){
-            return "redirect:login";
-        }
-        return "dashboard";
+    @GetMapping("new-note")
+    public String Dashboard() {
+
+        return "new-note";
     }
 
-    @GetMapping("signup")
-    public String Signup()
-    {
-        return "signup";
-
+    @GetMapping("home")
+    public String Home() {
+        return "home";
     }
 }

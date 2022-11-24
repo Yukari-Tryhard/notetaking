@@ -1,5 +1,7 @@
 package com.cnpmm.notetaking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -22,9 +24,26 @@ public class User {
     )
     private Integer id;
     private String email;
+    @JsonIgnore
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     private Collection<Role> roles = new ArrayList<>();
+
+    @OneToMany()
+    @Nullable
+    private Collection<Task> tasks = new ArrayList<>();
+
+    @OneToMany()
+    @Nullable
+    private Collection<Tag> tags = new ArrayList<>();
+
+    @OneToMany()
+    @Nullable
+    private Collection<Notebook> notebooks = new ArrayList<>();
+
+    @OneToMany()
+    @Nullable
+    private Collection<Note> notes = new ArrayList<>();
 
     public User(String email, String password) {
         this.email = email;
@@ -81,4 +100,35 @@ public class User {
         this.password = password;
     }
 
+    public Collection<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Collection<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Collection<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Collection<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public Collection<Notebook> getNotebooks() {
+        return notebooks;
+    }
+
+    public void setNotebooks(Collection<Notebook> notebooks) {
+        this.notebooks = notebooks;
+    }
+
+    public Collection<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(Collection<Note> notes) {
+        this.notes = notes;
+    }
 }
