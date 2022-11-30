@@ -43,6 +43,11 @@ public class AppController {
 
         return "new-note";
     }
+    @GetMapping("my-note")
+    public String MyNote() {
+
+        return "my-note";
+    }
 
     @GetMapping("my-notebook")
     public String MyNotebook() {
