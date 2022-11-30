@@ -267,6 +267,7 @@
             padding-left: 0.3rem;
             color: #b3b3b3;
         }
+
     </style>
 </head>
 <body>
@@ -352,6 +353,11 @@
             </div>
         </div>
     </div>
+</div>
+<div class="absolute w-full h-full bg-black z-10 top-0 left-0 opacity-40">
+</div>
+<div class="container w-1/3 h-1/3 bg-[#151515] absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl">
+    <div class="container rounded "></div>
 </div>
 <script>
     console.log("onready")
