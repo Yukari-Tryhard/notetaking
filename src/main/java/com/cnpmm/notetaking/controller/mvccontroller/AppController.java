@@ -43,6 +43,11 @@ public class AppController {
 
         return "new-note";
     }
+    @GetMapping("my-note")
+    public String MyNote() {
+
+        return "my-note";
+    }
 
     @GetMapping("home")
     public ModelAndView Home(HttpServletRequest request) {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head >
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="http://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
     <script src="https://cdn.tiny.cloud/1/5bqionfmj2ip2dfagxm86bzuckperf675cuancpuqyxli9g1/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
@@ -25,7 +25,7 @@
             position: relative;
         }
         #right-panel{
-            width: 78%;
+            width: 78% !important;
         }
         .tox-editor-header{
             background-color: #141516 !important;
