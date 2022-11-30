@@ -11,6 +11,9 @@ public class Trash {
     private Long trashId;
     private String type;
 
+    @ManyToOne
+    private User user;
+
     public Trash(String type) {
         this.type = type;
     }

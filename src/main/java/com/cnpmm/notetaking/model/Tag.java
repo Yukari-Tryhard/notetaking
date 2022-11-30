@@ -1,5 +1,7 @@
 package com.cnpmm.notetaking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,13 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
     private String tagName;
+
+    @ManyToOne
+    @JsonIgnore
+    private User user;
+
+    @ManyToOne
+    private Note note;
 
     public Tag(String tagName) {
         this.tagName = tagName;
@@ -33,5 +42,13 @@ public class Tag {
 
     public void setTagName(String tagName) {
         this.tagName = tagName;
+    }
+
+    public User getUser(){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 }

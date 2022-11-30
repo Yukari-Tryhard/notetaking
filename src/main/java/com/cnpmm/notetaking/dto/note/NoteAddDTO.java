@@ -1,19 +1,19 @@
-package com.cnpmm.notetaking.dao;
+package com.cnpmm.notetaking.dto.note;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class NoteAddDAO {
+public class NoteAddDTO {
     private String userId;
     private String title;
     private String content;
 
-    public NoteAddDAO(String userId, String title, String content) {
+    public NoteAddDTO(String userId, String title, String content) {
 
         this.userId = userId;
         this.title = title;
         this.content = content;
     }
-    public NoteAddDAO(){
+    public NoteAddDTO(){
 
     }
 

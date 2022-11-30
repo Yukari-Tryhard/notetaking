@@ -1,6 +1,7 @@
 package com.cnpmm.notetaking.service;
 
 import com.cnpmm.notetaking.model.Note;
+import com.cnpmm.notetaking.model.Notebook;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.NoteRepository;
 import com.cnpmm.notetaking.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,16 +26,51 @@ public class NoteService {
         this.userRepository = userRepository;
     }
 
-    public Collection<Note> findNoteByUser(String userId){
-        return noteRepository.findAllByUserId(userId);
-    }
-
     public Note addNewNote(Note note, String userId) {
         User user = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
         if (user != null){
-            note.setUser((user));
+            note.setUser(user);
+            return noteRepository.save(note);
         }
-        return noteRepository.save(note);
+        return null;
+
     }
 
+    public String deleteNote(Long noteId){
+        Note note = noteRepository.findById(noteId).orElse(null);
+        if (note != null){
+            noteRepository.delete(note);
+            noteRepository.RemoveNoteRelationship(noteId);
+            return "delete note with id " + note.getNoteId() + "success";
+        }
+        return "note with id " + noteId + " not found";
+    }
+    public Collection<Note> findAllNoteByUser(Integer userId){
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return noteRepository.findAllByUserId(userId);
+        }
+        return null;
+    }
+
+    public String updateNote(Note note){
+        try{
+            Note existNote = noteRepository.findById(note.getNoteId()).orElse(null);
+            if (existNote != null){
+                noteRepository.UpdateNote(note.getNoteId(), note.getTitle(), note.getContent());
+                return "updated note has id " + note.getNoteId();
+            }
+            return "note has id " + note.getNoteId() + " is not exist";
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
+    }
+
+    public Collection<Note> findAllNoteRecentlyByUser(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return noteRepository.findAllNoteRecentlyByUser(userId);
+        }
+        return null;
+    }
 }

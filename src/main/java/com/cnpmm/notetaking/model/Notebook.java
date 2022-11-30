@@ -3,6 +3,7 @@ package com.cnpmm.notetaking.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table()
@@ -13,6 +14,11 @@ public class Notebook {
     private Long notebookId;
     private String notebookName;
     private boolean isDeleted;
+    private Date dateCreated;
+    private Date dateUpdated;
+
+    @ManyToOne
+    private User user;
 
     @OneToMany(fetch = FetchType.EAGER)
     private Collection<Note> notes = new ArrayList<>();
@@ -56,5 +62,19 @@ public class Notebook {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dateUpdated = new Date();
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 }

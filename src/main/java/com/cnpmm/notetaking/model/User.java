@@ -1,6 +1,8 @@
 package com.cnpmm.notetaking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -26,29 +28,36 @@ public class User {
     private String email;
     @JsonIgnore
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch=FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     private Collection<Role> roles = new ArrayList<>();
 
-    @OneToMany()
     @Nullable
+    @OneToMany(mappedBy = "user")
     private Collection<Task> tasks = new ArrayList<>();
 
-    @OneToMany()
     @Nullable
+    @OneToMany(mappedBy = "user")
     private Collection<Tag> tags = new ArrayList<>();
 
-    @OneToMany()
     @Nullable
+    @OneToMany(mappedBy = "user")
     private Collection<Notebook> notebooks = new ArrayList<>();
 
-    @OneToMany()
     @Nullable
+    @OneToMany(mappedBy = "user")
     private Collection<Note> notes = new ArrayList<>();
+
+    @Nullable
+    @OneToMany(mappedBy = "user")
+    private Collection<Trash> trashes = new ArrayList<>();
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
+
+
 
     public Collection<Role> getRoles() {
         return roles;

@@ -1,9 +1,12 @@
 package com.cnpmm.notetaking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table()
@@ -17,9 +20,14 @@ public class Task {
     private boolean isDelete;
     private String title;
     private String content;
-
+    private Date dateCreated;
+    private Date dateUpdated;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Tag> tags = new ArrayList<>();
+
+    @ManyToOne
+    @JsonIgnore
+    private User user;
 
     public Task(Timestamp startDate, Timestamp endDate, String title, String content) {
         this.startDate = startDate;
@@ -83,5 +91,23 @@ public class Task {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreated = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dateUpdated = new Date();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

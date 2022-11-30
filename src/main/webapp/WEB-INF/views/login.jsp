@@ -9,46 +9,7 @@
     <title>Spring MVC 5 - form handling | Java Guides</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="http://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
-    <script>
-        var accessToken = localStorage.getItem("access_token");
-        var refreshToken = localStorage.getItem("refresh_token");
 
-        if (accessToken){
-            window.location.href = "/dashboard?token=" + accessToken;
-            $.ajax({
-                url: "/dashboard",
-                type: "GET",
-                beforeSend: function (xhr) {
-                    console.log("Bearer " + accessToken);
-                    debugger;
-                    xhr.setRequestHeader("Authorization", "Bearer " + accessToken);
-                },
-                success: function (){
-                    window.location.href = "/dashboard?token=" + accessToken;
-                },
-                fail: function(xhr, textStatus, errorThrown) {
-                    console.log("stop");
-                }
-            })
-        }
-        else if (refreshToken){
-            $.ajax({
-                url: "/api/v1/authenticate/refresh-token",
-                type: "POST",
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("Authorization", "Bearer " + refreshToken);
-                },
-                success: function (data){
-                    localStorage.setItem("access_token", data.access_token);
-                    localStorage.setItem("refresh_token", data.refresh_token);
-                    window.location.href = "/dashboard" + data.access_token;
-                },
-                fail: function(xhr, textStatus, errorThrown) {
-
-                }
-            })
-        }
-    </script>
 </head>
 <body>
 <div class="container-xl mx-auto linear-bg">
@@ -205,12 +166,33 @@
         $.post("/api/v1/authenticate",{email: email, password: password})
             .done(function (data) {
                 alert("success");
-                window.location.href = "/dashboard"
+                window.location.href = "/home"
             })
             .fail(function (data){
                 alert("fail")
                 console.log(data);
         })
     })
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    var accessToken = getCookie("access_token");
+
+    if (accessToken != ""){
+        window.location.href = "/home"
+    }
 </script>
 </html>

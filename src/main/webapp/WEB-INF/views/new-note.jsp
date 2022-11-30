@@ -190,6 +190,8 @@
 </div>
 </body>
 <script>
+
+
     tinymce.init({
         selector: 'textarea#right-panel',
         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
@@ -206,5 +208,6 @@
         ],
         content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
     });
+
 </script>
 </html>
