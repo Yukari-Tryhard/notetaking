@@ -166,7 +166,6 @@
             color: #FFFFFF;
         }
         .notes, .tasks{
-            display: flex;
             flex-direction: row;
             align-items: center;
             gap: 1.2rem;
@@ -174,11 +173,15 @@
             overflow: auto;
             flex: 1;
         }
+
+        .notes, .note{
+            display: flex;
+        }
         .note, .task{
             width: 15%;
+            display: flex;
             flex-shrink: 0;
             height: 93%;
-            display: flex;
             flex-direction: column;
             color: #FFFFFF;
             background-color: #222326;
@@ -186,6 +189,7 @@
             border-radius: 0.5rem;
             position: relative;
         }
+
         .note::after, .task::after{
             content: "";
             bottom: 0;
@@ -243,7 +247,7 @@
 
         }
         .tasks{
-            display: flex;
+            display: none;
             flex-direction: row;
             color: #ffffff;
         }
@@ -284,16 +288,29 @@
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
             <input id="search" placeholder="Search"/>
         </div>
-
-        <button   id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
+        <button  id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
+        <div class="flex flex-col w-full justify-between px-3 gap-3">
+            <div class="rounded-full flex flex-row items-center justify-center bg-[#33AF2DFF] px-3 gap-1	">
+                <i class="fa-regular fa-note-sticky"></i>
+                <div>Note</div>
+            </div>
+            <div class=" rounded-full flex flex-row items-center justify-center bg-[#178fa1] px-3 gap-1	 ">
+                <i class="fa-solid fa-list-check"></i>
+                <div>Task</div>
+            </div>
+            <div class="rounded-full flex flex-row items-center justify-center bg-[#AA1414FF] px-3 gap-1	 ">
+                <i class="fa-solid fa-book"></i>
+                <div>Notebook</div>
+            </div>
+        </div>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
-            <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
-            <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house" ></i> Home</div>
+            <div class="left-panel-taskbar" id="note" onclick="window.location.href='/my-note'"><i class="fa-solid fa-note-sticky" ></i>All notes</div>
+            <div class="left-panel-taskbar" id="task" onclick="window.location.href='/my-task'"><i class="fa-solid fa-clipboard-list" ></i> Task</div>
+            <div class="left-panel-taskbar" id="notebook" onclick="window.location.href='/my-notebook'"><i class="fa-solid fa-book" ></i> Notebook</div>
             <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
             <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
+            <div class="left-panel-taskbar" id="trash" onclick="window.location.href='/my-trash'"><i class="fa-solid fa-trash" ></i> Trash</div>
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
@@ -354,11 +371,7 @@
         </div>
     </div>
 </div>
-<div class="absolute w-full h-full bg-black z-10 top-0 left-0 opacity-40">
-</div>
-<div class="container w-1/3 h-1/3 bg-[#151515] absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl">
-    <div class="container rounded "></div>
-</div>
+
 <script>
     console.log("onready")
     function onReady(){
@@ -378,7 +391,8 @@
         })
 
         document.getElementById("new").addEventListener("click", function(){
-
+            document.getElementById("overlay").classList.remove("hidden");
+            document.getElementById("choices").classList.remove("hidden");
         })
     }
 

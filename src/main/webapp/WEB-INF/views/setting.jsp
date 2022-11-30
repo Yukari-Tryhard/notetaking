@@ -147,62 +147,6 @@
             width: 75%;
             height: 85%;
         }
-        .notes, .tasks{
-            flex-direction: row;
-            align-items: center;
-            gap: 1.2rem;
-            cursor: grab;
-            overflow: auto;
-            flex: 1;
-        }
-
-        .notes, .note{
-            display: flex;
-        }
-        .note, .task{
-            width: 15%;
-            display: flex;
-            flex-shrink: 0;
-            height: 45%;
-            flex-direction: column;
-            color: #FFFFFF;
-            background-color: #222326;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            position: relative;
-        }
-
-        .note::after, .task::after{
-            content: "";
-            bottom: 0;
-            height: 30%;
-            background: linear-gradient(to bottom,rgba(34,35,38,0.3) 0%, rgba(34,35,38,1) 100%);
-            width: calc(100% - 2rem);
-            position: absolute;
-            z-index: 2;
-        }
-        .note--name{
-            --max-line: 2;
-            display: -webkit-box;
-            overflow: hidden;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: var(--max-line);
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        .note--modify{
-            font-size: 0.8rem;
-            color: #b3b3b3;
-        }
-        .note--content, .task-description{
-            margin-top: 1.4rem;
-            --max-line: 8;
-            display: -webkit-box;
-            overflow: hidden;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: var(--max-line);
-            font-size: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -224,7 +168,7 @@
             <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house" ></i> Home</div>
             <div class="left-panel-taskbar" id="note" onclick="window.location.href='/my-note'"><i class="fa-solid fa-note-sticky" ></i>All notes</div>
             <div class="left-panel-taskbar" id="task" onclick="window.location.href='/my-task'"><i class="fa-solid fa-clipboard-list" ></i> Task</div>
-            <div class="left-panel-taskbar active" id="notebook" onclick="window.location.href='/my-notebook'"><i class="fa-solid fa-book" ></i> Notebook</div>
+            <div class="left-panel-taskbar" id="notebook" onclick="window.location.href='/my-notebook'"><i class="fa-solid fa-book" ></i> Notebook</div>
             <div class="left-panel-taskbar justify-between" id="tag">
                 <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (4)</div>
                 <i class="fa-solid fa-caret-down mr-7"></i>
@@ -240,86 +184,18 @@
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
-    <div id="right-panel" class="justify-between flex flex-col">
-        <div class="list-notebook w-full h-[25%] bg-[#141516] rounded-xl">
-            <div class="list-notebook--filter flex flex-row justify-end pt-2 gap-2 items-center">
-                <i class="fa-solid fa-filter text-white"></i>
-                <input type="dropdown" class="bg-[#141516] text-white"/>
-
-                <i class="fa-solid fa-sort text-white"></i>
-                <input type="dropdown" class="bg-[#141516] text-white"/>
+    <div id="right-panel">
+        <div id="user-settings" class="w-full h-full bg-[#141516] rounded-xl">
+            <div id="user-ava-name-setting" class="flex flex-row items-center pt-4 pl-4">
+                <div id="user-ava-setting" class=" h-[100px] w-[100px] bg-white rounded-full"></div>
+                <div id="user-name-setting" class="text-2xl pl-4 text-white">tinnguyen2682k1@gmail.com</div>
             </div>
-            <div class="list-notebook--list flex flex-row gap-8 pl-4">
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white border-[#8c63ff] border-4"></div>
-                    <div class="notebook-name text-[#8c63ff]">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-            </div>
-        </div>
-        <div class="note-list  ease-in-out	 w-full h-[70%] bg-[#141516] rounded-xl flex flex-row flex-wrap pt-4 pl-4 gap-3 items-around">
-            <div class="note">
-                        <div class="note--name">My First Note</div>
-                        <div class="note--modify">Last modify 20/10/2022</div>
-
-                        <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
+            <div id="password-setting">
+                <div id="password-setting-label" class="text-xl text-[#]">Reset password</div>
+                <label></label>
+                <input/>
+                <label></label>
+                <input/>
             </div>
         </div>
     </div>

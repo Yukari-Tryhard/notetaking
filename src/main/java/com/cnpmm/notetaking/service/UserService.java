@@ -1,5 +1,6 @@
 package com.cnpmm.notetaking.service;
 
+import com.cnpmm.notetaking.model.PasswordResetToken;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

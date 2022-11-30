@@ -73,8 +73,8 @@
                 <input id="password" name="password" type="password">
             </div>
             <div class="login-field">
-                <label for="password">Confirm your password</label>
-                <input id="password" name="password" type="password">
+                <label for="retype-password">Confirm your password</label>
+                <input id="retype-password" name="password" type="password">
             </div>
             <div id="error-message"></div>
             <button id="login-button">Create account</button>

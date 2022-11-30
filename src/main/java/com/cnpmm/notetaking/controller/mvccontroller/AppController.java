@@ -44,6 +44,16 @@ public class AppController {
         return "new-note";
     }
 
+    @GetMapping("my-notebook")
+    public String MyNotebook() {
+        return "my-notebook";
+    }
+
+    @GetMapping("setting")
+    public String Setting() {
+        return "setting";
+    }
+
     @GetMapping("home")
     public ModelAndView Home(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("home");

@@ -2,11 +2,13 @@ package com.cnpmm.notetaking.controller.restcontroller;
 
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.service.UserService;
+import com.cnpmm.notetaking.util.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 
@@ -43,4 +45,5 @@ public class UserController {
         userService.updateUser(id,email,password);
         return ResponseEntity.ok().build();
     }
+
 }
