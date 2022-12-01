@@ -38,4 +38,10 @@ public interface NoteRepository extends  JpaRepository<Note, Long>{
             nativeQuery = true
     )
     Collection<Note> findAllNoteRecentlyByUser(Integer userId);
+
+    @Query(
+            value = "Select * from note n WHERE n.user_id = ?1 Order by n.date_updated desc",
+            nativeQuery = true
+    )
+    Collection<Note> findAllNoteWithTagByUser(Integer userId);
 }

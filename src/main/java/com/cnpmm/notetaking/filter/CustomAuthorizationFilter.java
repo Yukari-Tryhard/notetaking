@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.cnpmm.notetaking.config.SecurityConfig;
+import com.cnpmm.notetaking.model.Role;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.UserRepository;
 import com.cnpmm.notetaking.service.UserService;
@@ -88,7 +89,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                                     .withSubject(email)
                                     .withExpiresAt(new Date(System.currentTimeMillis() + 10*60*1000))
                                     .withIssuer(request.getRequestURL().toString())
-                                    .withClaim("roles",user.getRoles().stream().collect(Collectors.toList()))
+                                    .withClaim("roles", (List<String>) userService.getRolesString(user.getId()))
                                     .sign(algorithm);
                             String newRefreshToken = JWT.create()
                                     .withSubject(email)
@@ -101,7 +102,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                             Cookie accessCookie = new Cookie("access_token", newAccessToken);
                             accessCookie.setSecure(useSecureCookie);  // determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
-                            accessCookie.setMaxAge(expiryTime);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
+                            accessCookie.setMaxAge(expiryTime/24);  // A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the cookie to be deleted.
                             accessCookie.setPath(cookiePath);  // The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
 
                             Cookie refreshCookie = new Cookie("refresh_token", newRefreshToken);
@@ -143,7 +144,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                                 cookie.setMaxAge(0);
                                 response.addCookie(cookie);
                             }
-                        response.sendRedirect("login");
                         return;
                     }
 

@@ -6,7 +6,10 @@ import com.cnpmm.notetaking.dto.notebook.NotebookUpdateDTO;
 import com.cnpmm.notetaking.model.Note;
 import com.cnpmm.notetaking.model.Notebook;
 import com.cnpmm.notetaking.service.NoteService;
+import com.cnpmm.notetaking.util.GenericResponse;
+import com.cnpmm.notetaking.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -41,11 +44,20 @@ public class NoteController {
         return ResponseEntity.created(uri).body(noteService.findAllNoteByUser(userId));
     }
 
-    @PutMapping(path = "/update")
-    public  ResponseEntity<String> updateNote(@RequestBody NoteUpdateDTO noteUpdateDTO){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/update").toUriString());
-        Note updateNote = new Note(noteUpdateDTO.getTitle(),noteUpdateDTO.getContent());
-        updateNote.setNoteId(noteUpdateDTO.getNoteId());
-        return ResponseEntity.created(uri).body(noteService.updateNote(updateNote));
+    @PutMapping(path = "/update",produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<GenericResponse<Note>> updateNote(@RequestBody NoteUpdateDTO noteUpdateDTO){
+        try{
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/update").toUriString());
+            Note updateNote = new Note(noteUpdateDTO.getTitle(),noteUpdateDTO.getContent());
+            updateNote.setNoteId(noteUpdateDTO.getNoteId());
+            ServiceResponse serviceResponse = noteService.updateNote(updateNote);
+            return ResponseEntity.created(uri).body(new GenericResponse<Note>(serviceResponse, updateNote));
+        }
+        catch (Exception ex)
+        {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/update").toUriString());
+            return ResponseEntity.created(uri).body(new GenericResponse<Note>(ex.getMessage(),500, null));
+        }
+
     }
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,7 +18,7 @@
             height: 100vh;
         }
         #left-panel{
-            width: 236px;
+            width: 18%;
             height: 85%;
             background-color: #141516;
             border-radius: 10px;
@@ -26,14 +27,12 @@
             margin: 0 13px;
         }
         #center-panel{
-            width: 250px;
+            width: 15%;
             height: 85%;
             background-color: #141516;
             border-radius: 10px;
             color: #FFFFFF;
             position: relative;
-            margin: 0 13px;
-            padding: 20px 13px;
 
         }
         #right-panel{
@@ -57,6 +56,7 @@
         }
         .tox-tinymce{
             border: none !important;
+            border-radius: 0 0 0.5rem 0.5rem !important;
         }
         .avatar-and-name{
             margin-top: 1rem;
@@ -170,10 +170,16 @@
             left: 1.3rem;
             z-index: 2;
         }
+        .note-name{
+            --max-line: 1;
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: var(--max-line);
+        }
 
-
-        .title-note{
-            padding-bottom: 4px;
+        .selected{
+            background-color: rgba(179, 179, 179, 0.33);
         }
     </style>
 </head>
@@ -183,7 +189,7 @@
         <div class="left-panel-header">
             <div class="avatar-and-name">
                 <div class="avatar-ligma"><img src="https://i.pinimg.com/736x/7a/69/fc/7a69fc7139dd2faaf696b9acc167afc0.jpg"/></div>
-                <div class="name-ligma">Hoki</div>
+                <div class="name-ligma"><c:out value="${user.getEmail()}"></c:out></div>
             </div>
             <i class="fa-solid fa-gear"></i>
         </div>
@@ -193,8 +199,8 @@
         </div>
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
+            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
             <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
             <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
@@ -203,75 +209,130 @@
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
-
     <div id="center-panel">
         <div style="display: block" class="center-panel-header">
 
-            <div style="display: -webkit-inline-box" class="icon-note-and-note">
+            <div class="icon-note-and-note flex flex-row pl-4 pt-2">
             <i style="font-size: 18px" class="fa-regular fa-note-sticky"></i>
             <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Notes</h2>
 
             </div>
 
-            <div style="opacity: 0.5; font-size: 14px !important; margin: 10px 0" class="center-panel-header--number-of-notes">
-                <p >9 notes</p>
+            <div style="opacity: 0.5; font-size: 14px !important; margin: 10px 0" class="center-panel-header--number-of-notes pl-4">
+                <p ><c:out value="${notesWithTag.size()}"></c:out> notes</p>
             </div>
 
-            <div style=" opacity: 0.8 !important; width: 225px; " class="title-tag-listnoteview">
-                <div style=" font-size: 14px;opacity: 0.6 !important;display: flex; border-bottom: 1px inset #b3b3b3; padding-bottom: 8px!important;" class="title-tag">
-                    <div style="padding-right: 30%;" class="title">
+            <div style=" opacity: 0.8 !important; " class="title-tag-listnoteview w-full">
+                <div style=" font-size: 14px;opacity: 0.6 !important;display: flex; border-bottom: 1px inset #b3b3b3; padding-bottom: 8px!important;" class="title-tag w-full pl-4">
+                    <div class="title w-1/2">
                         <button>TITLE</button>
                     </div>
 
-                    <div class="Tag">
+                    <div class="Tag w-1/2">
                         <button>| TAGS</button>
                     </div>
                 </div>
 
                 <div class="listnoteview">
-                    <div style=" border-bottom: 1px inset #b3b3b3; padding: 8px 0;" class="note1">
-                        <button >
-                            chi tiêu tháng 11
-                        </button>
-                    </div>
-                    <div style=" border-bottom: 1px inset #b3b3b3; padding: 8px 0;" class="note1">
-                        <button >
-                            k? ho?ch ngh? T?t
-                        </button>
-                    </div>
+                    <c:forEach items="${notesWithTag}" var="item">
+                        <c:if test = "${item.getNoteId() != activeNote.getNoteId()}">
+                            <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2" data-id="${item.getNoteId()}">
+                        </c:if>
+                            <c:if test = "${item.getNoteId() == activeNote.getNoteId()}">
+                                <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2 selected" data-id="${item.getNoteId()}">
+                            </c:if>
+                            <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+                            <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
+                                <c:forEach items="${item.getTags()}" var="tag">
+                                    <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </c:forEach>
                 </div>
 
             </div>
             </div>
         </div>
+    <div class="right-panel h-[85%] relative">
+        <div class="additional-info rounded-t-xl flex flex-row w-full text-white bg-[#141516] items-center justify-between">
+            <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
+                <div class="tag-section--title">Tags: </div>
+                <c:forEach items="${activeNote.getTags()}" var="tag">
+                    <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
+                </c:forEach>
+                <i class="fa-solid fa-circle-plus"></i>
+            </div>
+
+        </div>
+        <textarea id="note-taking" class="w-[100%] h-[95.5%]">
+            ${activeNote.getTitle()}${activeNote.getContent()}
+        </textarea>
+        <div id="save-btn" class=" rounded-full bg-[#8c63ff] w-[80px] h-[80px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
+            <i class="fa-regular fa-floppy-disk text-4xl text-white"></i>
+        </div>
     </div>
 
-    <textarea id="right-panel">
-      <h1>Hoki note</h1>
-    </textarea>
 
+</div>
 </div>
 </body>
 <script>
 
+    function onReady(){
+        tinymce.init({
+            selector: 'textarea#note-taking',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            width: '100%',
+            height: '95.5%',
+            statusbar: false,
+            menubar: false,
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
+        });
 
-    tinymce.init({
-        selector: 'textarea#right-panel',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
+        var listNote = document.getElementsByClassName("note");
+        for (var i=0; i<listNote.length; i++) {
+            listNote[i].addEventListener('click', function (e){
+                var noteId = this.getAttribute("data-id");
+                window.location.href = "/my-note/?note-id=" + noteId;
+            });
+        }
 
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        width: '78%',
-        height: '85%',
-        statusbar: false,
-        menubar: false,
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' },
-        ],
-        content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
-    });
+        document.getElementById("save-btn").addEventListener("click",function (e){
+            var myContent = tinymce.get("note-taking").getContent();
+            let firstBreaklineIndex = myContent.indexOf("\n");
+            var title = myContent.slice(0,firstBreaklineIndex) || '<h1>YOUR TITLE HERE</h1>';
+            var content = myContent.slice(firstBreaklineIndex+1) || '';
+            fetch('http://localhost:8080/api/v1/note/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "note-id": ${activeNote.getNoteId()},
+                    "title": title,
+                    "content":content
+                    } )
+            })
+                .then(response => response.json())
+                .then(response => console.log(JSON.stringify(response)))
+        })
 
+    }
+
+
+
+    if (document.readyState !== "loading") {
+        onReady(); // Or setTimeout(onReady, 0); if you want it consistently async
+    } else {
+        document.addEventListener("DOMContentLoaded", onReady);
+    }
 </script>
 </html>
