@@ -27,9 +27,18 @@ public class NoteController {
         this.noteService = noteService;
     }
     @PostMapping(path = "/add")
-    public ResponseEntity<Note> registerNewUser(@RequestBody NoteAddDTO noteAdd){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
-        return ResponseEntity.created(uri).body(noteService.addNewNote(new Note(noteAdd.getTitle(), noteAdd.getContent()), noteAdd.getUserId()));
+    public ResponseEntity<GenericResponse<Note>> registerNewNote(@RequestBody NoteAddDTO noteAdd){
+        try{
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
+            Note note = new Note(noteAdd.getTitle(), noteAdd.getContent(), noteAdd.getTags());
+            ServiceResponse noteServiceResponse = noteService.addNewNote(note,noteAdd.getUserId());
+            return ResponseEntity.created(uri).body(new GenericResponse<Note>(noteServiceResponse, note));
+        }
+        catch (Exception ex)
+        {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
+            return ResponseEntity.created(uri).body(new GenericResponse<Note>(ex.getMessage(),500, null));
+        }
     }
 
     @DeleteMapping(path = "/delete")
@@ -47,9 +56,14 @@ public class NoteController {
     }
 
     @GetMapping(path = "/get-all")
-    public  ResponseEntity<Collection<Note>> getAllTag(@RequestParam Integer userId){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/get-all").toUriString());
-        return ResponseEntity.created(uri).body(noteService.findAllNoteByUser(userId));
+    public  ResponseEntity<GenericResponse<?>> getAllNote(@RequestParam Integer userId){
+        try{
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/get-all").toUriString());
+            return ResponseEntity.created(uri).body(new GenericResponse<>("get all succesfully", 200,noteService.findAllNoteByUser(userId)));
+        }catch (Exception ex){
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/get-all").toUriString());
+            return ResponseEntity.created(uri).body(new GenericResponse<>(ex.getMessage(), 500,null));
+        }
     }
 
     @PutMapping(path = "/update",produces = MediaType.APPLICATION_JSON_VALUE)

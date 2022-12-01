@@ -32,6 +32,13 @@ public class Note {
         this.isDelete = false;
     }
 
+    public Note(String title, String content, Collection<Tag> tags) {
+        this.title = title;
+        this.content = content;
+        this.isDelete = false;
+        this.tags = tags;
+    }
+
     public Note() {
 
     }

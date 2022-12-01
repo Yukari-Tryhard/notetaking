@@ -27,13 +27,20 @@ public class NoteService {
         this.userRepository = userRepository;
     }
 
-    public Note addNewNote(Note note, String userId) {
-        User user = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
-        if (user != null){
-            note.setUser(user);
-            return noteRepository.save(note);
+    public ServiceResponse addNewNote(Note note, String userId) {
+        try{
+            User user = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
+            if (user != null){
+                note.setUser(user);
+                noteRepository.save(note);
+                return new ServiceResponse(200, "add note succesfully");
+            }
+            return new ServiceResponse(409,"user with id " + userId + " not found");
         }
-        return null;
+        catch (Exception ex)
+        {
+            return new ServiceResponse(500,ex.getMessage());
+        }
 
     }
 
