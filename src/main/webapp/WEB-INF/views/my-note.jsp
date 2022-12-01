@@ -17,7 +17,7 @@
             height: 100vh;
         }
         #left-panel{
-            width: 236px;
+            width: 18%;
             height: 85%;
             background-color: #141516;
             border-radius: 10px;
@@ -26,7 +26,7 @@
             margin: 0 13px;
         }
         #center-panel{
-            width: 250px;
+            width: 15%;
             height: 85%;
             background-color: #141516;
             border-radius: 10px;
@@ -57,6 +57,7 @@
         }
         .tox-tinymce{
             border: none !important;
+            border-radius: 0 0 0.5rem 0.5rem !important;
         }
         .avatar-and-name{
             margin-top: 1rem;
@@ -170,10 +171,12 @@
             left: 1.3rem;
             z-index: 2;
         }
-
-
-        .title-note{
-            padding-bottom: 4px;
+        .note-name{
+            --max-line: 1;
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: var(--max-line);
         }
     </style>
 </head>
@@ -193,8 +196,8 @@
         </div>
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
+            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
             <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
             <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
@@ -207,7 +210,7 @@
     <div id="center-panel">
         <div style="display: block" class="center-panel-header">
 
-            <div style="display: -webkit-inline-box" class="icon-note-and-note">
+            <div class="icon-note-and-note flex flex-row">
             <i style="font-size: 18px" class="fa-regular fa-note-sticky"></i>
             <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Notes</h2>
 
@@ -217,38 +220,50 @@
                 <p >9 notes</p>
             </div>
 
-            <div style=" opacity: 0.8 !important; width: 225px; " class="title-tag-listnoteview">
-                <div style=" font-size: 14px;opacity: 0.6 !important;display: flex; border-bottom: 1px inset #b3b3b3; padding-bottom: 8px!important;" class="title-tag">
-                    <div style="padding-right: 30%;" class="title">
+            <div style=" opacity: 0.8 !important; " class="title-tag-listnoteview w-full">
+                <div style=" font-size: 14px;opacity: 0.6 !important;display: flex; border-bottom: 1px inset #b3b3b3; padding-bottom: 8px!important;" class="title-tag w-full">
+                    <div class="title w-1/2">
                         <button>TITLE</button>
                     </div>
 
-                    <div class="Tag">
+                    <div class="Tag w-1/2">
                         <button>| TAGS</button>
                     </div>
                 </div>
 
                 <div class="listnoteview">
-                    <div style=" border-bottom: 1px inset #b3b3b3; padding: 8px 0;" class="note1">
-                        <button >
-                            chi tiêu tháng 11
-                        </button>
-                    </div>
-                    <div style=" border-bottom: 1px inset #b3b3b3; padding: 8px 0;" class="note1">
-                        <button >
-                            k? ho?ch ngh? T?t
-                        </button>
+                    <div style=" border-bottom: 1px inset #b3b3b3; padding: 8px 0;" class="note w-full flex flex-row">
+                        <div class="note-name max-w-[50%] text-clip text-ellipsis">My First noteeeeeeeeeeeeeeeee</div>
+                        <div class="note-tag max-w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
+                            <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                            <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                            <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                            <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                        </div>
                     </div>
                 </div>
 
             </div>
             </div>
         </div>
-    </div>
-
-    <textarea id="right-panel">
+    <div class="right-panel h-[85%]">
+        <div class="additional-info rounded-t-xl flex flex-row w-full text-white bg-[#141516] items-center justify-between">
+            <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
+                <div class="tag-section--title">Tags: </div>
+                <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                <div class="tag rounded-full px-2 border border-white  ">Travel</div>
+                <i class="fa-solid fa-circle-plus"></i>
+            </div>
+            <div class="save-btn rounded-full px-4 text-xl border-2 border-white mr-4">
+                Save
+            </div>
+        </div>
+        <textarea id="note-taking">
       <h1>Hoki note</h1>
     </textarea>
+    </div>
+
 
 </div>
 </body>
@@ -256,12 +271,12 @@
 
 
     tinymce.init({
-        selector: 'textarea#right-panel',
+        selector: 'textarea#note-taking',
         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
 
         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        width: '78%',
-        height: '85%',
+        width: '100%',
+        height: '95.5%',
         statusbar: false,
         menubar: false,
         tinycomments_mode: 'embedded',
