@@ -147,6 +147,15 @@
             width: 75%;
             height: 85%;
         }
+        .change-avatar{
+            transform: translateX(71px);
+            padding-top: 71px;
+            font-size: 18px;
+            visibility: hidden;
+        }
+        #user-ava-setting:hover .change-avatar{
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -187,9 +196,23 @@
     <div id="right-panel">
         <div id="user-settings" class="w-full h-full bg-[#141516] rounded-xl">
             <div id="user-ava-name-setting" class="flex flex-row items-center pt-4 pl-4">
-                <div id="user-ava-setting" class=" h-[100px] w-[100px] bg-white rounded-full"></div>
+                <div id="user-ava-setting" class=" h-[100px] w-[100px] bg-white rounded-full">
+                    <button class="change-avatar">
+                        <i class="fa-solid fa-camera"></i>
+                    </button>
+                </div>
                 <div id="user-name-setting" class="text-2xl pl-4 text-white">tinnguyen2682k1@gmail.com</div>
             </div>
+
+
+            <div id="password-setting">
+                <div id="password-setting-label" class="text-xl text-[#]">Reset password</div>
+                <label></label>
+                <input/>
+                <label></label>
+                <input/>
+            </div>
+
             <div id="password-setting">
                 <div id="password-setting-label" class="text-xl text-[#]">Reset password</div>
                 <label></label>

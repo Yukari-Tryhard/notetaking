@@ -49,6 +49,12 @@ public class AppController {
         return "my-note";
     }
 
+    @GetMapping("my-task")
+    public String MyTask() {
+
+        return "my-task";
+    }
+
     @GetMapping("my-notebook")
     public String MyNotebook() {
         return "my-notebook";
