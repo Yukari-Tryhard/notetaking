@@ -327,7 +327,7 @@
                         <c:if test = "${item.getDateUpdated() == null}">
                             <div class="note--modify">Last modify ${item.getDateCreated().getMonth()}/${item.getDateCreated().getDate()}/${item.getDateCreated().getYear()}</div>
                         </c:if>
-                        <div class="note--content">${item.getContent()} </div>
+                        <div class="note--content">${item.getContent()}</div>
                     </div>
                 </c:forEach>
             </div>

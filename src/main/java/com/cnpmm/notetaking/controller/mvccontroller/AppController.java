@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -44,9 +46,21 @@ public class AppController {
         return "new-note";
     }
     @GetMapping("my-note")
-    public String MyNote() {
-
-        return "my-note";
+    public ModelAndView MyNote(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="note-id", required = false) Long noteId) {
+        Principal principal = request.getUserPrincipal();
+        User user = userService.findByEmail(principal.getName());
+        Collection<Note> notesWithTag = noteService.findAllNoteWithTagByUser(user.getId());
+        ArrayList<Note> notesWithTagArray = new ArrayList(notesWithTag);
+        ModelAndView modelAndView = new ModelAndView("my-note");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("notesWithTag",notesWithTagArray);
+        if (noteId != null){
+            modelAndView.addObject("activeNote",noteService.findById(noteId));
+        }
+        else{
+            modelAndView.addObject("activeNote", notesWithTagArray.get(0));
+        }
+        return modelAndView;
     }
 
     @GetMapping("my-notebook")

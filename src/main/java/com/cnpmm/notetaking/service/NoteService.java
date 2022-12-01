@@ -5,6 +5,7 @@ import com.cnpmm.notetaking.model.Notebook;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.NoteRepository;
 import com.cnpmm.notetaking.repository.UserRepository;
+import com.cnpmm.notetaking.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,16 +54,16 @@ public class NoteService {
         return null;
     }
 
-    public String updateNote(Note note){
+    public ServiceResponse updateNote(Note note){
         try{
             Note existNote = noteRepository.findById(note.getNoteId()).orElse(null);
             if (existNote != null){
                 noteRepository.UpdateNote(note.getNoteId(), note.getTitle(), note.getContent());
-                return "updated note has id " + note.getNoteId();
+                return new ServiceResponse(200,"updated note has id " + note.getNoteId());
             }
-            return "note has id " + note.getNoteId() + " is not exist";
+            return new ServiceResponse(409,"note has id " + note.getNoteId() + " is not exist");
         }catch (Exception ex){
-            return ex.getMessage();
+            return new ServiceResponse(500,ex.getMessage());
         }
     }
 
@@ -72,5 +73,17 @@ public class NoteService {
             return noteRepository.findAllNoteRecentlyByUser(userId);
         }
         return null;
+    }
+
+    public Collection<Note> findAllNoteWithTagByUser(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return noteRepository.findAllNoteWithTagByUser(userId);
+        }
+        return null;
+    }
+
+    public Note findById(Long noteId) {
+        return noteRepository.findById(noteId).orElse(null);
     }
 }
