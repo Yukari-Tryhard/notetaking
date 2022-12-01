@@ -1,9 +1,11 @@
 package com.cnpmm.notetaking.controller.mvccontroller;
 
 import com.cnpmm.notetaking.model.Note;
+import com.cnpmm.notetaking.model.Tag;
 import com.cnpmm.notetaking.model.Task;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.service.NoteService;
+import com.cnpmm.notetaking.service.TagService;
 import com.cnpmm.notetaking.service.TaskService;
 import com.cnpmm.notetaking.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +36,14 @@ public class AppController {
     @Autowired
     private TaskService taskService;
 
-    public AppController(UserService userService, NoteService noteService, TaskService taskService) {
+    @Autowired
+    private TagService tagService;
+
+    public AppController(UserService userService, NoteService noteService, TaskService taskService, TagService tagService) {
         this.userService = userService;
         this.noteService = noteService;
         this.taskService = taskService;
+        this.tagService = tagService;
     }
 
     @GetMapping("new-note")
@@ -50,15 +56,37 @@ public class AppController {
         Principal principal = request.getUserPrincipal();
         User user = userService.findByEmail(principal.getName());
         Collection<Note> notesWithTag = noteService.findAllNoteWithTagByUser(user.getId());
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
         ArrayList<Note> notesWithTagArray = new ArrayList(notesWithTag);
         ModelAndView modelAndView = new ModelAndView("my-note");
         modelAndView.addObject("user",user);
+        modelAndView.addObject("tags",tags);
         modelAndView.addObject("notesWithTag",notesWithTagArray);
         if (noteId != null){
             modelAndView.addObject("activeNote",noteService.findById(noteId));
         }
         else{
             modelAndView.addObject("activeNote", notesWithTagArray.get(0));
+        }
+        return modelAndView;
+    }
+
+    @GetMapping("my-task")
+    public ModelAndView MyTask(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="task-id", required = false) Long taskId) {
+        Principal principal = request.getUserPrincipal();
+        User user = userService.findByEmail(principal.getName());
+        Collection<Task> tasks = taskService.findAllTaskByUser(user.getId());
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
+        ArrayList<Task> tasksArray = new ArrayList(tasks);
+        ModelAndView modelAndView = new ModelAndView("my-task");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("tags",tags);
+        modelAndView.addObject("tasks",tasks);
+        if (taskId != null){
+            modelAndView.addObject("activeTask",taskService.findById(taskId));
+        }
+        else{
+            modelAndView.addObject("activeTask", tasksArray.get(0));
         }
         return modelAndView;
     }

@@ -33,9 +33,17 @@ public class NoteController {
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<String> deleteNote(@RequestParam Long noteId){
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
-        return ResponseEntity.created(uri).body(noteService.deleteNote(noteId));
+    public ResponseEntity<GenericResponse<?>> deleteNote(@RequestParam Long noteId){
+        try{
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/delete").toUriString());
+            ServiceResponse serviceResponse = noteService.deleteNote(noteId);
+            return ResponseEntity.created(uri).body(new GenericResponse<Note>(serviceResponse, null));
+        }
+        catch (Exception ex)
+        {
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/delete").toUriString());
+            return ResponseEntity.created(uri).body(new GenericResponse<Object>(ex.getMessage(),500, null));
+        }
     }
 
     @GetMapping(path = "/get-all")

@@ -37,14 +37,20 @@ public class NoteService {
 
     }
 
-    public String deleteNote(Long noteId){
-        Note note = noteRepository.findById(noteId).orElse(null);
-        if (note != null){
-            noteRepository.delete(note);
-            noteRepository.RemoveNoteRelationship(noteId);
-            return "delete note with id " + note.getNoteId() + "success";
+    public ServiceResponse deleteNote(Long noteId){
+        try{
+            Note note = noteRepository.findById(noteId).orElse(null);
+            if (note != null){
+                noteRepository.delete(note);
+                noteRepository.RemoveNoteRelationship(noteId);
+                return new ServiceResponse(200,"delete note with id " + note.getNoteId() + "success");
+            }
+            return new ServiceResponse(409, "note with id " + noteId + " not found");
         }
-        return "note with id " + noteId + " not found";
+        catch (Exception ex)
+        {
+            return new ServiceResponse(500,ex.getMessage());
+        }
     }
     public Collection<Note> findAllNoteByUser(Integer userId){
         User user = userRepository.findById(userId).orElse(null);

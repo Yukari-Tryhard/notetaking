@@ -181,6 +181,12 @@
         .selected{
             background-color: rgba(179, 179, 179, 0.33);
         }
+        #start-date, #end-date{
+            background-color: #141516;
+        }
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
     </style>
 </head>
 <body>
@@ -200,8 +206,8 @@
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
             <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
-            <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
+            <div class="left-panel-taskbar " id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
+            <div class="left-panel-taskbar  active" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
             <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="left-panel-taskbar justify-between" id="tag">
                 <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
@@ -222,39 +228,35 @@
 
             <div class="icon-note-and-note flex flex-row pl-4 pt-2">
                 <i style="font-size: 18px" class="fa-regular fa-note-sticky"></i>
-                <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Notes</h2>
+                <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Tasks</h2>
 
             </div>
 
             <div style="opacity: 0.5; font-size: 14px !important; margin: 10px 0" class="center-panel-header--number-of-notes pl-4">
-                <p ><c:out value="${notesWithTag.size()}"></c:out> notes</p>
+                <p ><c:out value="${tasks.size()}"></c:out> tasks</p>
             </div>
 
             <div style=" opacity: 0.8 !important; " class="title-tag-listnoteview w-full">
                 <div style=" font-size: 14px;opacity: 0.6 !important;display: flex; border-bottom: 1px inset #b3b3b3; padding-bottom: 8px!important;" class="title-tag w-full pl-4">
                     <div class="title w-1/2">
-                        <button>TITLE</button>
+                        <button>TASK NAME</button>
                     </div>
-
-                    <div class="Tag w-1/2">
-                        <button>| TAGS</button>
+                    <div class="title w-1/2 pl-[20px]">
+                        <button>DUE DAY</button>
                     </div>
                 </div>
 
-                <div class="listnoteview">
-                    <c:forEach items="${notesWithTag}" var="item">
-                    <c:if test = "${item.getNoteId() != activeNote.getNoteId()}">
-                    <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2" data-id="${item.getNoteId()}">
-                        </c:if>
-                        <c:if test = "${item.getNoteId() == activeNote.getNoteId()}">
-                        <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2 selected" data-id="${item.getNoteId()}">
+                <div class="listtaskview">
+                    <c:forEach items="${tasks}" var="item">
+                    <c:if test = "${item.getTaskId() != activeTask.getTaskId()}">
+                    <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
+                    </c:if>
+                        <c:if test = "${item.getTaskId() == activeTask.getTaskId()}">
+                        <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 selected items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
                             </c:if>
-                            <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
-                            <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
-                                <c:forEach items="${item.getTags()}" var="tag">
-                                    <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
-                                </c:forEach>
-                            </div>
+                            <div class="task-check" data-id="${item.getTaskId()}"><i class="fa-regular fa-circle"></i></div>
+                            <div class="task-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+                            <div class="task-due-day w-[50%] text-clip text-ellipsis">${item.getEndDate().toGMTString()}</div>
                         </div>
                         </c:forEach>
                     </div>
@@ -263,18 +265,20 @@
             </div>
         </div>
         <div class="right-panel h-[85%] relative">
-            <div class="additional-info rounded-t-xl flex flex-row w-full text-white bg-[#141516] items-center justify-between">
-                <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
-                    <div class="tag-section--title">Tags: </div>
-                    <c:forEach items="${activeNote.getTags()}" var="tag">
-                        <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
-                    </c:forEach>
-                    <i class="fa-solid fa-circle-plus"></i>
+            <div class="additional-info gap-2 rounded-t-xl flex flex-col w-full text-white bg-[#141516] items-start pt-2 pl-4 pb-4">
+                <div class="start-date flex flex-row gap-2">
+                    <div>Start Date: </div>
+                    <input id="start-date" type="datetime-local" class="text-white color-white" value="${activeTask.getStartDate()}">
                 </div>
+                <div class="end-date flex flex-row gap-2">
+                    <div>End Date: </div>
+                    <input id="end-date" type="datetime-local" class="text-white color-white" value="${activeTask.getEndDate()}">
+                </div>
+
 
             </div>
             <textarea id="note-taking" class="w-[100%] h-[95.5%]">
-                ${activeNote.getTitle()}${activeNote.getContent()}
+                ${activeTask.getTitle()}${activeTask.getContent()}
             </textarea>
             <div id="save-btn" class="transition-[bottom] duration-500 rounded-full bg-[#2cd39d] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#0e8972] hover:cursor-pointer	">
                 <i class="fa-regular fa-floppy-disk text-3xl text-white"></i>
@@ -312,20 +316,31 @@
             content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
         });
 
-        var listNote = document.getElementsByClassName("note");
-        for (var i=0; i<listNote.length; i++) {
-            listNote[i].addEventListener('click', function (e){
-                var noteId = this.getAttribute("data-id");
-                window.location.href = "/my-note/?note-id=" + noteId;
+        var listTask = document.getElementsByClassName("task");
+        for (var i=0; i<listTask.length; i++) {
+            listTask[i].addEventListener('click', function (e){
+                var taskId = this.getAttribute("data-id");
+                window.location.href = "/my-task?task-id=" + taskId;
             });
         }
+
+
+        document.getElementById("option-btn").addEventListener("click", function (e){
+            e.target.classList.toggle("rotate-90");
+            document.getElementById("save-btn").classList.toggle("bottom-28");
+            document.getElementById("delete-btn").classList.toggle("bottom-48");
+        })
+
+        document.getElementById("tag").addEventListener("click", function (){
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
+        })
 
         document.getElementById("save-btn").addEventListener("click",function (e){
             var myContent = tinymce.get("note-taking").getContent();
             let firstBreaklineIndex = myContent.indexOf("\n");
             var title = myContent.slice(0,firstBreaklineIndex) || '<h1>YOUR TITLE HERE</h1>';
             var content = myContent.slice(firstBreaklineIndex+1) || '';
-            fetch('http://localhost:8080/api/v1/note/update', {
+            fetch('http://localhost:8080/api/v1/task/update', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -353,16 +368,8 @@
                 .then(response => window.location.href="/my-note")
         })
 
-        document.getElementById("option-btn").addEventListener("click", function (e){
-            e.target.classList.toggle("rotate-90");
-            document.getElementById("save-btn").classList.toggle("bottom-28");
-            document.getElementById("delete-btn").classList.toggle("bottom-48");
-        })
-
-        document.getElementById("tag").addEventListener("click", function (){
-            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
-        })
     }
+
 
 
     if (document.readyState !== "loading") {

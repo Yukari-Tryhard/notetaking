@@ -203,7 +203,15 @@
             <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
             <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
             <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
-            <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
+            <div class="left-panel-taskbar justify-between" id="tag">
+                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
+                <i class="fa-solid fa-caret-down mr-7"></i>
+            </div>
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-hidden">
+                <c:forEach items="${tags}" var="tag">
+                <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
+                </c:forEach>
+            </div>
             <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
             <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
         </div>
@@ -268,9 +276,16 @@
         <textarea id="note-taking" class="w-[100%] h-[95.5%]">
             ${activeNote.getTitle()}${activeNote.getContent()}
         </textarea>
-        <div id="save-btn" class=" rounded-full bg-[#8c63ff] w-[80px] h-[80px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
-            <i class="fa-regular fa-floppy-disk text-4xl text-white"></i>
+        <div id="save-btn" class="transition-[bottom] duration-500 rounded-full bg-[#2cd39d] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#0e8972] hover:cursor-pointer	">
+            <i class="fa-regular fa-floppy-disk text-3xl text-white"></i>
         </div>
+        <div id="delete-btn" class="transition-[bottom] duration-500 rounded-full bg-[#cb1234] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#890e25] hover:cursor-pointer	">
+            <i class="fa-solid fa-folder-minus text-3xl text-white"></i>
+        </div>
+        <div id="option-btn" class="transition-transform duration-500 rounded-full bg-[#8c63ff] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
+            <i class="fa-solid fa-ellipsis text-4xl text-white transition-transform"></i>
+        </div>
+
     </div>
 
 
@@ -323,6 +338,29 @@
             })
                 .then(response => response.json())
                 .then(response => console.log(JSON.stringify(response)))
+        })
+
+        document.getElementById("delete-btn").addEventListener("click",function (e){
+            fetch('http://localhost:8080/api/v1/note/delete?noteId=${activeNote.getNoteId()}', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+
+                } )
+            })
+                .then(response => window.location.href="/my-note")
+        })
+
+        document.getElementById("option-btn").addEventListener("click", function (e){
+            e.target.classList.toggle("rotate-90");
+            document.getElementById("save-btn").classList.toggle("bottom-28");
+            document.getElementById("delete-btn").classList.toggle("bottom-48");
+        })
+
+        document.getElementById("tag").addEventListener("click", function (){
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
         })
 
     }
