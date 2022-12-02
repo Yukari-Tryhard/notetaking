@@ -1,3 +1,4 @@
+<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head >
@@ -154,6 +155,22 @@
             left: 1.3rem;
             z-index: 2;
         }
+        .tox-editor-header{
+            background-color: #141516 !important;
+        }
+        .tox-toolbar__primary{
+            background-color: #141516 !important;
+        }
+        .tox .tox-tbtn svg{
+            fill: #FFFFFF !important;
+        }
+        .tox .tox-tbtn svg:hover, .tox .tox-tbtn:hover{
+            background-color: #4e4e4e !important;
+        }
+        .tox-tinymce{
+            border: none !important;
+            border-radius: 0 0 0.5rem 0.5rem !important;
+        }
     </style>
 </head>
 <body>
@@ -162,7 +179,7 @@
         <div class="left-panel-header">
             <div class="avatar-and-name">
                 <div class="avatar-ligma"><img src="https://i.pinimg.com/736x/7a/69/fc/7a69fc7139dd2faaf696b9acc167afc0.jpg"/></div>
-                <div class="name-ligma">Hoki</div>
+                <div class="name-ligma">${user.getEmail()}</div>
             </div>
             <i class="fa-solid fa-gear"></i>
         </div>
@@ -174,40 +191,166 @@
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
             <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
-            <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
-            <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
-            <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-note'" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-task'" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-notebook'" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="left-panel-taskbar justify-between" id="tag">
+                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
+                <i class="fa-solid fa-caret-down mr-7"></i>
+            </div>
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
+                <c:forEach items="${tags}" var="tag">
+                    <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
+                </c:forEach>
+            </div>
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
 
-    <textarea id="right-panel">
-      <h1>Hoki note</h1>
-    </textarea>
+    <div class="right-panel h-[85%] relative">
+        <div class="additional-info rounded-t-xl flex flex-row justify-start w-full text-white bg-[#141516] items-center gap-2">
+            <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
+                <div class="tag-section--title">Tags: </div>
+            </div>
+            <i id="add-tag" class="fa-solid fa-circle-plus hover:cursor-pointer"></i>
+
+        </div>
+        <textarea id="note-taking" class="w-[100%] h-[95.5%]">
+            <h1>New notetitle</h1>
+        </textarea>
+
+    </div>
+</div>
+<div id="overlay" class="absolute w-full hidden h-full bg-black z-10 top-0 left-0 opacity-40">
+</div>
+<div id="choices" class="container flex hidden  w-1/3 h-1/3 bg-[#151515] absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl  flex flex-row items-center	 justify-around">
+    <div id="add-note" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-red-500 hover:text-white">
+        <i class="fa-solid fa-note-sticky text-8xl flex"></i>
+        <div class="text-xl font-medium">Note</div>
+        <div class="text-center">Save important thing to you</div>
+    </div>
+    <div id="add-task" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-green-500 hover:text-white">
+        <i class="fa-solid fa-list-check text-8xl flex"></i>
+        <div class="text-xl font-medium">Task</div>
+        <div class="text-center">Reminder for what you will do</div>
+    </div>
+    <div id="add-notebook" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-blue-500 hover:text-white">
+        <i class="fa-solid fa-tags text-8xl flex"></i>
+        <div class="text-xl font-medium">Notebook</div>
+        <div class="text-center">Create your own moment</div>
+    </div>
 </div>
 </body>
 <script>
+    function onReady(){
+
+        function updateNoteHandlder(){
+            var myContent = tinymce.get("note-taking").getContent();
+            let firstBreaklineIndex = myContent.indexOf("\n");
+            var title = myContent.slice(0,firstBreaklineIndex) || '<h1>YOUR TITLE HERE</h1>';
+            var content = myContent.slice(firstBreaklineIndex+1) || '';
+            tagsEle = document.querySelectorAll('.tags > .tag');
+
+            var tags = [];
+            for (var i = 0; i < tagsEle.length; i++){
+                tags.push(tagsEle[i].innerHTML);
+
+            }
+
+            fetch('http://localhost:8080/api/v1/note/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "user-id": ${user.getId()},
+                    "title": title,
+                    "content":content,
+                    "tags": tags
+                } )
+            })
+                .then(response => response.json())
+                .then(response => console.log(JSON.stringify(response)))
+        }
 
 
-    tinymce.init({
-        selector: 'textarea#right-panel',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
-        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        width: '78%',
-        height: '85%',
-        statusbar: false,
-        menubar: false,
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-            { value: 'First.Name', title: 'First Name' },
-            { value: 'Email', title: 'Email' },
-        ],
-        content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
-    });
+        tinymce.init({
+            selector: 'textarea#note-taking',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            width: '100%',
+            height: '95.5%',
+            statusbar: false,
+            menubar: false,
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }",
+
+        });
+
+        document.getElementById("new").addEventListener("click", function(){
+            document.getElementById("overlay").classList.remove("hidden");
+            document.getElementById("choices").classList.remove("hidden");
+        })
+
+        document.getElementById("add-note").addEventListener("click", function(){
+            window.location.href = "/new-note";
+        })
+
+        document.getElementById("add-notebook").addEventListener("click", function(){
+            window.location.href = "/new-notebook";
+        })
+
+        document.getElementById("add-task").addEventListener("click", function(){
+            window.location.href = "/new-task";
+        })
+
+        document.getElementById("tag").addEventListener("click", function (){
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
+        })
+
+        var tagsEle = document.querySelectorAll('.tags > .tag');
+
+        document.addEventListener("click", function (e){
+            for (var i = 0; i < tagsEle.length; i++){
+                if (tagsEle[i].innerHTML == ""){
+                    tagsEle[i].remove();
+                }
+            }
+        }, true)
+
+        document.getElementById("add-tag").addEventListener("click",function (){
+            let newTag = document.createElement("div");
+            newTag.classList.add(...["tag", "rounded-full", "px-2" ,"border","border-white"]);
+            newTag.contentEditable = "true";
+            newTag.innerHTML = "DefaultTag";
+            document.querySelector(".tags").appendChild(newTag);
+            tagsEle = document.querySelectorAll('.tags > .tag');
+            document.addEventListener("click", function (e){
+                for (var i = 0; i < tagsEle.length; i++){
+                    if (tagsEle[i].innerHTML == ""){
+                        tagsEle[i].remove();
+                    }
+                }
+            }, true)
+        })
+
+        window.onbeforeunload = function(){
+            updateNoteHandlder();
+        };
+    }
+
+
+
+    if (document.readyState !== "loading") {
+        onReady(); // Or setTimeout(onReady, 0); if you want it consistently async
+    } else {
+        document.addEventListener("DOMContentLoaded", onReady);
+    }
 
 </script>
 </html>

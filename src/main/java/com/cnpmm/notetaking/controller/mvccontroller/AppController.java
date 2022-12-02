@@ -1,13 +1,7 @@
 package com.cnpmm.notetaking.controller.mvccontroller;
 
-import com.cnpmm.notetaking.model.Note;
-import com.cnpmm.notetaking.model.Tag;
-import com.cnpmm.notetaking.model.Task;
-import com.cnpmm.notetaking.model.User;
-import com.cnpmm.notetaking.service.NoteService;
-import com.cnpmm.notetaking.service.TagService;
-import com.cnpmm.notetaking.service.TaskService;
-import com.cnpmm.notetaking.service.UserService;
+import com.cnpmm.notetaking.model.*;
+import com.cnpmm.notetaking.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,18 +33,42 @@ public class AppController {
     @Autowired
     private TagService tagService;
 
-    public AppController(UserService userService, NoteService noteService, TaskService taskService, TagService tagService) {
+    @Autowired
+    private NotebookService notebookService;
+
+    public AppController(UserService userService, NoteService noteService, TaskService taskService, TagService tagService, NotebookService notebookService) {
         this.userService = userService;
         this.noteService = noteService;
         this.taskService = taskService;
         this.tagService = tagService;
+        this.notebookService = notebookService;
     }
 
     @GetMapping("new-note")
-    public String Dashboard() {
-
-        return "new-note";
+    public ModelAndView NewNote(HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        User user = userService.findByEmail(principal.getName());
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
+        ModelAndView modelAndView = new ModelAndView("new-note");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("tags",tags);
+        return modelAndView;
     }
+
+    @GetMapping("new-task")
+    public ModelAndView NewTask(HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+        User user = userService.findByEmail(principal.getName());
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
+        ModelAndView modelAndView = new ModelAndView("new-task");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("tags",tags);
+        return modelAndView;
+    }
+
+
+
     @GetMapping("my-note")
     public ModelAndView MyNote(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="note-id", required = false) Long noteId) {
         Principal principal = request.getUserPrincipal();
@@ -92,8 +110,25 @@ public class AppController {
     }
 
     @GetMapping("my-notebook")
-    public String MyNotebook() {
-        return "my-notebook";
+    public ModelAndView MyNotebook(HttpServletRequest request, HttpServletResponse response, @RequestParam(name="notebook-id", required = false) Long notebookId) {
+        Principal principal = request.getUserPrincipal();
+        User user = userService.findByEmail(principal.getName());
+        Collection<Notebook> notebooks = notebookService.findAllNotebookByUser(user.getId());
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
+        Collection<Note> notes = noteService.findAllNoteRecentlyByUser(user.getId());
+        ArrayList<Notebook> notebooksArray = new ArrayList(notebooks);
+        ModelAndView modelAndView = new ModelAndView("my-notebook");
+        modelAndView.addObject("user",user);
+        modelAndView.addObject("tags",tags);
+        modelAndView.addObject("notebooks",notebooks);
+        modelAndView.addObject("notes", notes);
+        if (notebookId != null){
+            modelAndView.addObject("activeNotebook",notebookService.findById(notebookId));
+        }
+        else{
+            modelAndView.addObject("activeNotebook", notebooksArray.get(0));
+        }
+        return modelAndView;
     }
 
     @GetMapping("setting")
@@ -108,9 +143,9 @@ public class AppController {
         User user = userService.findByEmail(principal.getName());
         Collection<Note> noteRecently = noteService.findAllNoteByUser(user.getId());
         Collection<Note> notes = noteService.findAllNoteRecentlyByUser(user.getId());
-        Collection<Task> taskRecently = taskService.findAllTaskRecentlyByUser(user.getId());
-        Collection<Task> tasks = taskService.findAllTaskByUser(user.getId());
         modelAndView.addObject("user",user);
+        Collection<Tag> tags = tagService.findAllTagByUser(user.getId());
+        modelAndView.addObject("tags",tags);
         modelAndView.addObject("notes", notes);
         modelAndView.addObject("noteRecently", noteRecently);
         return modelAndView;

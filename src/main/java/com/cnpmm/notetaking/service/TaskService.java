@@ -51,7 +51,7 @@ public class TaskService {
         try{
             Task existTask = taskRepository.findById(task.getTaskId()).orElse(null);
             if (existTask != null){
-                taskRepository.UpdateTask(task.getTaskId(),task.getTitle(), task.getContent(), task.getStartDate(), task.getEndDate());
+                taskRepository.UpdateTask(task.getTaskId(),task.getTitle(), task.getContent(), task.getStartDate(), task.getEndDate(), task.isDone());
                 return new ServiceResponse(200, "updated task has id " + task.getTaskId());
             }
             return new ServiceResponse(409, "task has id " + task.getTaskId() + " is not exist");

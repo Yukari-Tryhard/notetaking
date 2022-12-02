@@ -170,7 +170,7 @@
             left: 1.3rem;
             z-index: 2;
         }
-        .note-name{
+        .task-name{
             --max-line: 1;
             display: -webkit-box;
             overflow: hidden;
@@ -205,22 +205,19 @@
         </div>
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
-            <div class="left-panel-taskbar " id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/home'"id="home"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="left-panel-taskbar " onclick="window.location.href='/my-note'" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
             <div class="left-panel-taskbar  active" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
-            <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-notebook'" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="left-panel-taskbar justify-between" id="tag">
                 <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
                 <i class="fa-solid fa-caret-down mr-7"></i>
             </div>
-            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-hidden">
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
                 <c:forEach items="${tags}" var="tag">
                     <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
                 </c:forEach>
-            </div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
-        </div>
+            </div></div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div id="center-panel">
@@ -250,21 +247,28 @@
                     <c:forEach items="${tasks}" var="item">
                     <c:if test = "${item.getTaskId() != activeTask.getTaskId()}">
                     <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
+                        </c:if>
+                    <c:if test = "${item.getTaskId() == activeTask.getTaskId()}">
+                    <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 selected items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
+
                     </c:if>
-                        <c:if test = "${item.getTaskId() == activeTask.getTaskId()}">
-                        <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 selected items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
-                            </c:if>
-                            <div class="task-check" data-id="${item.getTaskId()}"><i class="fa-regular fa-circle"></i></div>
+                        <c:if test = "${item.isDone() == 'true'}">
+                            <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="true"><i class="fa-solid fa-circle-check"></i></div>
+                        </c:if>
+                        <c:if test = "${item.isDone() != 'true'}">
+                            <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="false"><i class="fa-regular fa-circle"></i></div>
+                        </c:if>
                             <div class="task-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+
                             <div class="task-due-day w-[50%] text-clip text-ellipsis">${item.getEndDate().toGMTString()}</div>
-                        </div>
+
                         </c:forEach>
                     </div>
-
                 </div>
             </div>
         </div>
-        <div class="right-panel h-[85%] relative">
+    </div>
+    <div class="right-panel h-[85%] relative">
             <div class="additional-info gap-2 rounded-t-xl flex flex-col w-full text-white bg-[#141516] items-start pt-2 pl-4 pb-4">
                 <div class="start-date flex flex-row gap-2">
                     <div>Start Date: </div>
@@ -291,10 +295,8 @@
             </div>
 
         </div>
-
-
-    </div>
 </div>
+
 </body>
 <script>
 
@@ -318,10 +320,13 @@
 
         var listTask = document.getElementsByClassName("task");
         for (var i=0; i<listTask.length; i++) {
-            listTask[i].addEventListener('click', function (e){
-                var taskId = this.getAttribute("data-id");
-                window.location.href = "/my-task?task-id=" + taskId;
-            });
+            if (listTask[i].getAttribute("data-id") != ${activeTask.getTaskId()}){
+
+                listTask[i].addEventListener('click', function (e){
+                    var taskId = this.getAttribute("data-id");
+                    window.location.href = "/my-task?task-id=" + taskId;
+                });
+            }
         }
 
 
@@ -346,15 +351,17 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "note-id": ${activeNote.getNoteId()},
+                    "task-id": ${activeTask.getTaskId()},
                     "title": title,
-                    "content":content
+                    "content":content,
+                    "start-date":document.getElementById("start-date").value,
+                    "end-date":document.getElementById("end-date").value,
+                    "is-done":document.querySelector('[data-id="${activeTask.getTaskId()}"] > .task-check').getAttribute("data-isCheck")
                 } )
             })
                 .then(response => response.json())
                 .then(response => console.log(JSON.stringify(response)))
         })
-
         document.getElementById("delete-btn").addEventListener("click",function (e){
             fetch('http://localhost:8080/api/v1/note/delete?noteId=${activeNote.getNoteId()}', {
                 method: 'DELETE',
@@ -368,6 +375,19 @@
                 .then(response => window.location.href="/my-note")
         })
 
+        var taskChecks = document.querySelectorAll(".task-check");
+        for (var i = 0; i < taskChecks.length; i++){
+            taskChecks[i].addEventListener("click", function(e){;
+                this.firstChild.classList.toggle("fa-circle");
+                this.firstChild.classList.toggle("fa-circle-check");
+                if (this.getAttribute("data-isCheck") == "true"){
+                    this.setAttribute("data-isCheck","false");
+                }
+                else if(this.getAttribute("data-isCheck") == "false"){
+                    this.setAttribute("data-isCheck","true");
+                }
+            })
+        }
     }
 
 

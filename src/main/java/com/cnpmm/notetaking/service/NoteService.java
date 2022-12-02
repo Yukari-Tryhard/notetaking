@@ -71,7 +71,7 @@ public class NoteService {
         try{
             Note existNote = noteRepository.findById(note.getNoteId()).orElse(null);
             if (existNote != null){
-                noteRepository.UpdateNote(note.getNoteId(), note.getTitle(), note.getContent());
+                noteRepository.save(note);
                 return new ServiceResponse(200,"updated note has id " + note.getNoteId());
             }
             return new ServiceResponse(409,"note has id " + note.getNoteId() + " is not exist");
@@ -98,5 +98,9 @@ public class NoteService {
 
     public Note findById(Long noteId) {
         return noteRepository.findById(noteId).orElse(null);
+    }
+
+    public void clearTag(Long noteId){
+        noteRepository.clearTag(noteId);
     }
 }

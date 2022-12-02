@@ -71,7 +71,7 @@ public class TagService {
 
     public ServiceResponse updateTag(Tag tag){
         try{
-            Tag existTag = tagRepository.findById(tag.getTagId()).orElse(null);
+            Tag existTag = tagRepository.findByTagName(tag.getTagName());
             if (existTag != null){
                 tagRepository.UpdateTag(tag.getTagId(),tag.getTagName());
                 return new ServiceResponse(200,"updated tag has id " + tag.getTagId());
@@ -80,5 +80,14 @@ public class TagService {
         }catch (Exception ex){
             return new ServiceResponse(500,ex.getMessage());
         }
+    }
+
+    public Tag saveTag(Tag tag) {
+        Tag existTag = tagRepository.findByTagName(tag.getTagName());
+        if (existTag != null){
+            updateTag(tag);
+            return tag;
+        }
+        return tagRepository.save(tag);
     }
 }

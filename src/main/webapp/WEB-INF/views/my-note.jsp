@@ -199,22 +199,19 @@
         </div>
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/home'" id="home"><i class="fa-solid fa-house"></i> Home</div>
             <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
-            <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
-            <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-task'" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-notebook'"id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="left-panel-taskbar justify-between" id="tag">
                 <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
                 <i class="fa-solid fa-caret-down mr-7"></i>
             </div>
-            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-hidden">
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
                 <c:forEach items="${tags}" var="tag">
                 <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
                 </c:forEach>
-            </div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
-        </div>
+            </div></div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div id="center-panel">
@@ -241,7 +238,7 @@
                     </div>
                 </div>
 
-                <div class="listnoteview">
+                <div class="listnoteview flex flex-col">
                     <c:forEach items="${notesWithTag}" var="item">
                         <c:if test = "${item.getNoteId() != activeNote.getNoteId()}">
                             <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2" data-id="${item.getNoteId()}">
@@ -249,28 +246,30 @@
                             <c:if test = "${item.getNoteId() == activeNote.getNoteId()}">
                                 <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2 selected" data-id="${item.getNoteId()}">
                             </c:if>
-                            <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+                        <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div></div>
                             <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
                                 <c:forEach items="${item.getTags()}" var="tag">
                                     <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
                                 </c:forEach>
                             </div>
                         </div>
+
                     </c:forEach>
                 </div>
 
-            </div>
+
+
             </div>
         </div>
     <div class="right-panel h-[85%] relative">
-        <div class="additional-info rounded-t-xl flex flex-row w-full text-white bg-[#141516] items-center justify-between">
+        <div class="additional-info rounded-t-xl flex flex-row justify-start w-full text-white bg-[#141516] items-center gap-2">
             <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
                 <div class="tag-section--title">Tags: </div>
                 <c:forEach items="${activeNote.getTags()}" var="tag">
-                    <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
+                    <div class="tag rounded-full px-2 border border-white " contenteditable ="true">${tag.getTagName()}</div>
                 </c:forEach>
-                <i class="fa-solid fa-circle-plus"></i>
             </div>
+            <i id="add-tag" class="fa-solid fa-circle-plus hover:cursor-pointer"></i>
 
         </div>
         <textarea id="note-taking" class="w-[100%] h-[95.5%]">
@@ -311,7 +310,7 @@
             ],
             content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
         });
-
+        var tagsEle = document.querySelectorAll('.tags > .tag');
         var listNote = document.getElementsByClassName("note");
         for (var i=0; i<listNote.length; i++) {
             listNote[i].addEventListener('click', function (e){
@@ -320,20 +319,38 @@
             });
         }
 
+        document.addEventListener("click", function (e){
+            for (var i = 0; i < tagsEle.length; i++){
+                if (tagsEle[i].innerHTML == ""){
+                    tagsEle[i].remove();
+                }
+            }
+        }, true)
         document.getElementById("save-btn").addEventListener("click",function (e){
             var myContent = tinymce.get("note-taking").getContent();
             let firstBreaklineIndex = myContent.indexOf("\n");
             var title = myContent.slice(0,firstBreaklineIndex) || '<h1>YOUR TITLE HERE</h1>';
             var content = myContent.slice(firstBreaklineIndex+1) || '';
+            tagsEle = document.querySelectorAll('.tags > .tag');
+
+            var tags = [];
+            for (var i = 0; i < tagsEle.length; i++){
+                tags.push(tagsEle[i].innerHTML);
+
+            }
+
             fetch('http://localhost:8080/api/v1/note/update', {
                 method: 'PUT',
                 headers: {
+                    'Accept':"*",
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    "user-id": ${user.getId()},
                     "note-id": ${activeNote.getNoteId()},
                     "title": title,
-                    "content":content
+                    "content":content,
+                    "tags": tags
                     } )
             })
                 .then(response => response.json())
@@ -363,6 +380,21 @@
             document.getElementById("tag-list").classList.toggle("max-h-[208px]");
         })
 
+        document.getElementById("add-tag").addEventListener("click",function (){
+            let newTag = document.createElement("div");
+            newTag.classList.add(...["tag", "rounded-full", "px-2" ,"border","border-white"]);
+            newTag.contentEditable = "true";
+            newTag.innerHTML = "DefaultTag";
+            document.querySelector(".tags").appendChild(newTag);
+            tagsEle = document.querySelectorAll('.tags > .tag');
+            document.addEventListener("click", function (e){
+                for (var i = 0; i < tagsEle.length; i++){
+                    if (tagsEle[i].innerHTML == ""){
+                        tagsEle[i].remove();
+                    }
+                }
+            }, true)
+        })
     }
 
 

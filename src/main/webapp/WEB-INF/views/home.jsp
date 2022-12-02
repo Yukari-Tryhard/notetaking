@@ -289,29 +289,20 @@
             <input id="search" placeholder="Search"/>
         </div>
         <button  id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
-        <div class="flex flex-col w-full justify-between px-3 gap-3">
-            <div class="rounded-full flex flex-row items-center justify-center bg-[#33AF2DFF] px-3 gap-1	">
-                <i class="fa-regular fa-note-sticky"></i>
-                <div>Note</div>
-            </div>
-            <div class=" rounded-full flex flex-row items-center justify-center bg-[#178fa1] px-3 gap-1	 ">
-                <i class="fa-solid fa-list-check"></i>
-                <div>Task</div>
-            </div>
-            <div class="rounded-full flex flex-row items-center justify-center bg-[#AA1414FF] px-3 gap-1	 ">
-                <i class="fa-solid fa-book"></i>
-                <div>Notebook</div>
-            </div>
-        </div>
         <div class="left-panel-body">
             <div class="left-panel-taskbar active" id="home"><i class="fa-solid fa-house" ></i> Home</div>
             <div class="left-panel-taskbar" id="note" onclick="window.location.href='/my-note'"><i class="fa-solid fa-note-sticky" ></i>All notes</div>
             <div class="left-panel-taskbar" id="task" onclick="window.location.href='/my-task'"><i class="fa-solid fa-clipboard-list" ></i> Task</div>
             <div class="left-panel-taskbar" id="notebook" onclick="window.location.href='/my-notebook'"><i class="fa-solid fa-book" ></i> Notebook</div>
-            <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash" onclick="window.location.href='/my-trash'"><i class="fa-solid fa-trash" ></i> Trash</div>
-        </div>
+            <div class="left-panel-taskbar justify-between" id="tag">
+                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
+                <i class="fa-solid fa-caret-down mr-7"></i>
+            </div>
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
+                <c:forEach items="${tags}" var="tag">
+                    <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
+                </c:forEach>
+            </div></div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div class="right-side">
@@ -329,8 +320,11 @@
                         </c:if>
                         <div class="note--content">${item.getContent()}</div>
                     </div>
+
                 </c:forEach>
             </div>
+        </div>
+    </div>
         </div>
         <div class="recently">
             <div class="recently-filter">
@@ -371,9 +365,27 @@
         </div>
     </div>
 </div>
+<div id="overlay" class="absolute w-full hidden h-full bg-black z-10 top-0 left-0 opacity-40">
+</div>
+<div id="choices" class="container flex hidden  w-1/3 h-1/3 bg-[#151515] absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl  flex flex-row items-center	 justify-around">
+    <div id="add-note" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-red-500 hover:text-white">
+        <i class="fa-solid fa-note-sticky text-8xl flex"></i>
+        <div class="text-xl font-medium">Note</div>
+        <div class="text-center">Save important thing to you</div>
+    </div>
+    <div id="add-task" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-green-500 hover:text-white">
+        <i class="fa-solid fa-list-check text-8xl flex"></i>
+        <div class="text-xl font-medium">Task</div>
+        <div class="text-center">Reminder for what you will do</div>
+    </div>
+    <div id="add-notebook" class="container rounded flex flex-col	items-center justify-center h-2/3 w-1/4 bg-white hover:cursor-pointer hover:bg-blue-500 hover:text-white">
+        <i class="fa-solid fa-tags text-8xl flex"></i>
+        <div class="text-xl font-medium">Notebook</div>
+        <div class="text-center">Create your own moment</div>
+    </div>
+</div>
 
 <script>
-    console.log("onready")
     function onReady(){
         document.getElementById("recently").addEventListener("click", function (event){
             var targetElement = event.target || event.srcElement;
@@ -393,6 +405,27 @@
         document.getElementById("new").addEventListener("click", function(){
             document.getElementById("overlay").classList.remove("hidden");
             document.getElementById("choices").classList.remove("hidden");
+        })
+
+        document.getElementById("overlay").addEventListener("click", function (e){
+            e.target.classList.add("hidden");
+            document.getElementById("choices").classList.add("hidden");
+        })
+
+        document.getElementById("add-note").addEventListener("click", function(){
+            window.location.href = "/new-note";
+        })
+
+        document.getElementById("add-notebook").addEventListener("click", function(){
+            window.location.href = "/new-notebook";
+        })
+
+        document.getElementById("add-task").addEventListener("click", function(){
+            window.location.href = "/new-task";
+        })
+
+        document.getElementById("tag").addEventListener("click", function (){
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
         })
     }
 

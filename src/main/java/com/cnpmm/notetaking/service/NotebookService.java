@@ -102,4 +102,8 @@ public class NotebookService {
             return new ServiceResponse(500,ex.getMessage());
         }
     }
+
+    public Notebook findById(Long notebookId) {
+        return notebookRepository.findById(notebookId).orElse(null);
+    }
 }

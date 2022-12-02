@@ -9,9 +9,9 @@ public class NoteAddDTO {
     private String userId;
     private String title;
     private String content;
-    private Collection<Tag> tags;
+    private Collection<String> tags;
 
-    public NoteAddDTO(String userId, String title, String content, Collection<Tag> tags) {
+    public NoteAddDTO(String userId, String title, String content, Collection<String> tags) {
 
         this.userId = userId;
         this.title = title;
@@ -47,11 +47,11 @@ public class NoteAddDTO {
         this.content = content;
     }
     @JsonProperty("tags")
-    public Collection<Tag> getTags() {
+    public Collection<String> getTags() {
         return tags;
     }
     @JsonProperty("tags")
-    public void setTags(Collection<Tag> tags) {
+    public void setTags(Collection<String> tags) {
         this.tags = tags;
     }
 }
