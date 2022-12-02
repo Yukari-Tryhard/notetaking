@@ -221,106 +221,51 @@
         </div>
         <button   id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house" ></i> Home</div>
+            <div class="left-panel-taskbar" id="home" onclick="window.location.href='/home'"><i class="fa-solid fa-house" ></i> Home</div>
             <div class="left-panel-taskbar" id="note" onclick="window.location.href='/my-note'"><i class="fa-solid fa-note-sticky" ></i>All notes</div>
             <div class="left-panel-taskbar" id="task" onclick="window.location.href='/my-task'"><i class="fa-solid fa-clipboard-list" ></i> Task</div>
             <div class="left-panel-taskbar active" id="notebook" onclick="window.location.href='/my-notebook'"><i class="fa-solid fa-book" ></i> Notebook</div>
             <div class="left-panel-taskbar justify-between" id="tag">
-                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (4)</div>
+                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
                 <i class="fa-solid fa-caret-down mr-7"></i>
             </div>
-            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-hidden">
-                <div class="tag left-panel-taskbar text-sm pl-[5rem]">Cooking (2)</div>
-                <div class="tag left-panel-taskbar text-sm pl-[5rem]">Cooking (2)</div>
-                <div class="tag left-panel-taskbar text-sm pl-[5rem]">Cooking (2)</div>
-                <div class="tag left-panel-taskbar text-sm pl-[5rem]">Cooking (2)</div>
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
+                <c:forEach items="${tags}" var="tag">
+                    <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
+                </c:forEach>
             </div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash" onclick="window.location.href='/my-trash'"><i class="fa-solid fa-trash" ></i> Trash</div>
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div id="right-panel" class="justify-between flex flex-col">
         <div class="list-notebook w-full h-[25%] bg-[#141516] rounded-xl">
             <div class="list-notebook--filter flex flex-row justify-end pt-2 gap-2 items-center">
-                <i class="fa-solid fa-filter text-white"></i>
-                <input type="dropdown" class="bg-[#141516] text-white"/>
-
-                <i class="fa-solid fa-sort text-white"></i>
-                <input type="dropdown" class="bg-[#141516] text-white"/>
             </div>
             <div class="list-notebook--list flex flex-row gap-8 pl-4">
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white border-[#8c63ff] border-4"></div>
-                    <div class="notebook-name text-[#8c63ff]">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
-                <div class="notebook flex flex-col items-center gap-1 mt-4">
-                    <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white"></div>
-                    <div class="notebook-name text-white">Diary</div>
-                </div>
+                <c:forEach items="${notebooks}" var="notebook">
+                    <div class="notebook flex flex-col items-center gap-1 mt-4" data-id="${notebook.getNotebookId()}">
+                        <c:if test = "${notebook.getNotebookId() == activeNotebook.getNotebookId()}">
+                            <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white border-[#8c63ff] border-4"></div>
+                        </c:if>
+                        <c:if test = "${notebook.getNotebookId() != activeNotebook.getNotebookId()}">
+                            <div class="notebook-image w-[80px] h-[80px] rounded-full bg-white "></div>
+                        </c:if>
+                        <div class="notebook-name max-w-[140px] text-center text-white">${notebook.getNotebookName()}</div>
+                    </div>
+                </c:forEach>
+
             </div>
         </div>
         <div class="note-list  ease-in-out	 w-full h-[70%] bg-[#141516] rounded-xl flex flex-row flex-wrap pt-4 pl-4 gap-3 items-around">
-            <div class="note">
-                        <div class="note--name">My First Note</div>
-                        <div class="note--modify">Last modify 20/10/2022</div>
-
-                        <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
-            <div class="note">
-                <div class="note--name">My First Note</div>
-                <div class="note--modify">Last modify 20/10/2022</div>
-
-                <div class="note--content">My first note </div>
-            </div>
+            <c:forEach items="${notes}" var="note">
+                <c:if test = "${activeNotebook.getNotes().contains(note)}">
+                    <div class="note" data-id="${note.getNoteId()}">
+                        <div class="note--name">${note.getTitle()}</div>
+                        <div class="note--modify">Last modify ${note.getDateUpdated()}</div>
+                        <div class="note--content">${note.getContent()}</div>
+                    </div>
+                </c:if>
+            </c:forEach>
         </div>
     </div>
 
@@ -367,8 +312,28 @@
         })
 
         document.getElementById("tag").addEventListener("click", function (){
-            document.getElementById("tag-list").classList.toggle("max-h-[1000px]");
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
         })
+
+        var listNotebook = document.getElementsByClassName("notebook");
+        for (var i=0; i<listNotebook.length; i++) {
+            if (listNotebook[i].getAttribute("notebook-id") != ${activeNotebook.getNotebookId()}){
+
+                listNotebook[i].addEventListener('click', function (e){
+                    var notebookId = this.getAttribute("data-id");
+                    window.location.href = "/my-notebook?notebook-id=" + notebookId;
+                });
+            }
+        }
+
+        var listNote = document.getElementsByClassName("note");
+        for (var i=0; i<listNote.length; i++) {
+            listNote[i].addEventListener('click', function (e){
+                var noteId = this.getAttribute("data-id");
+                window.location.href = "/my-note/?note-id=" + noteId;
+            });
+        }
+        
     }
 
     if (document.readyState !== "loading") {

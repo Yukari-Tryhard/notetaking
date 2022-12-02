@@ -20,10 +20,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Transactional
     @Modifying
     @Query(
-            value = "UPDATE Task t SET t.title = ?2, t.content = ?3, t.start_date = ?4, t.end_date = ?5 WHERE t.task_id = ?1",
+            value = "UPDATE Task t SET t.title = ?2, t.content = ?3, t.start_date = ?4, t.end_date = ?5, t.is_done = ?6 WHERE t.task_id = ?1",
             nativeQuery = true
     )
-    void UpdateTask(Long taskId, String title, String content, Timestamp startDate, Timestamp endDate);
+    void UpdateTask(Long taskId, String title, String content, Timestamp startDate, Timestamp endDate, boolean isDone);
 
     @Query(
             value = "Select * from task t WHERE t.user_id = ?1 Order by t.date_updated desc",

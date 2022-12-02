@@ -22,6 +22,7 @@ public class Task {
     private String content;
     private Date dateCreated;
     private Date dateUpdated;
+    private boolean isDone;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Tag> tags = new ArrayList<>();
 
@@ -35,6 +36,15 @@ public class Task {
         this.title = title;
         this.content = content;
         this.isDelete = false;
+    }
+
+    public Task(Timestamp startDate, Timestamp endDate, String title, String content, boolean isDone) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.content = content;
+        this.isDelete = false;
+        this.isDone = isDone;
     }
 
     public Task() {
@@ -96,6 +106,7 @@ public class Task {
     @PrePersist
     protected void onCreate() {
         dateCreated = new Date();
+        isDone = false;
     }
 
     @PreUpdate
@@ -109,5 +120,13 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }

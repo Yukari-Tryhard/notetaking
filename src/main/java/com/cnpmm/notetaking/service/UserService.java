@@ -98,4 +98,8 @@ public class UserService implements UserDetailsService {
     public Collection<String> getRolesString(Integer userId) {
         return userRepository.getRolesString(userId);
     }
+
+    public User findById(Integer userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 }

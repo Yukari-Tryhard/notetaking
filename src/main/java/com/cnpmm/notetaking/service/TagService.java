@@ -4,6 +4,7 @@ import com.cnpmm.notetaking.model.Tag;
 import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.TagRepository;
 import com.cnpmm.notetaking.repository.UserRepository;
+import com.cnpmm.notetaking.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,31 +25,35 @@ public class TagService {
         this.userRepository = userRepository;
     }
 
-    public Tag AddTagByUser(Tag tag, Integer userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
-        if (user != null){
-            if (!(tagRepository.findTagByTagNameWithUserId(tag.getTagName(), userId) != null)){
-                tag.setUser(user);
-                Tag saveTag = tagRepository.save(tag);
-                return saveTag;
+    public ServiceResponse AddTagByUser(Tag tag, Integer userId){
+        try{
+            User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
+            if (user != null){
+                if (!(tagRepository.findTagByTagNameWithUserId(tag.getTagName(), userId) != null)){
+                    tag.setUser(user);
+                    Tag saveTag = tagRepository.save(tag);
+                    return new ServiceResponse(200,"save tag successfully");
+                }
+                return new ServiceResponse(200,"tag already exits");
             }
-
-            return null;
+            return new ServiceResponse(409,"user with id "+userId + " not found");
         }
-        return null;
+        catch (Exception ex){
+            return new ServiceResponse(500,ex.getMessage());
+        }
     }
 
-    public String deleteById(Long tagId){
+    public ServiceResponse deleteById(Long tagId){
         try{
             Tag tag = tagRepository.findById(tagId).orElse(null);
             if (tag != null){
                 tagRepository.deleteById(tagId);
-                return "Tag with id " + tagId + " is deleted";
+                return new ServiceResponse(200,"Tag with id " + tagId + " is deleted");
             }
-            return "Tag with id " + tagId + " is not exists";
+            return new ServiceResponse(409,"Tag with id " + tagId + " is not exists");
         }
         catch (Exception ex){
-            return ex.getMessage();
+            return new ServiceResponse(500,ex.getMessage());
         }
     }
 
@@ -64,16 +69,25 @@ public class TagService {
         }
     }
 
-    public String updateTag(Tag tag){
+    public ServiceResponse updateTag(Tag tag){
         try{
-            Tag existTag = tagRepository.findById(tag.getTagId()).orElse(null);
+            Tag existTag = tagRepository.findByTagName(tag.getTagName());
             if (existTag != null){
                 tagRepository.UpdateTag(tag.getTagId(),tag.getTagName());
-                return "updated tag has id " + tag.getTagId();
+                return new ServiceResponse(200,"updated tag has id " + tag.getTagId());
             }
-            return "tag has id " + tag.getTagId() + " is not exist";
+            return new ServiceResponse(409,"tag has id " + tag.getTagId() + " is not exist");
         }catch (Exception ex){
-            return ex.getMessage();
+            return new ServiceResponse(500,ex.getMessage());
         }
+    }
+
+    public Tag saveTag(Tag tag) {
+        Tag existTag = tagRepository.findByTagName(tag.getTagName());
+        if (existTag != null){
+            updateTag(tag);
+            return tag;
+        }
+        return tagRepository.save(tag);
     }
 }

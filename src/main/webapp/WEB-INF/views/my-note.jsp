@@ -199,14 +199,19 @@
         </div>
         <button id="new"><i class="fa-solid fa-plus icon"></i><p>New</p></button>
         <div class="left-panel-body">
-            <div class="left-panel-taskbar" id="home"><i class="fa-solid fa-house"></i> Home</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/home'" id="home"><i class="fa-solid fa-house"></i> Home</div>
             <div class="left-panel-taskbar  active" id="note"><i class="fa-solid fa-note-sticky"></i>All notes</div>
-            <div class="left-panel-taskbar" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
-            <div class="left-panel-taskbar" id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
-            <div class="left-panel-taskbar" id="tag"><i class="fa-solid fa-tags"></i> Tag</div>
-            <div class="left-panel-taskbar" id="share"><i class="fa-solid fa-square-share-nodes"></i> Share</div>
-            <div class="left-panel-taskbar" id="trash"><i class="fa-solid fa-trash"></i> Trash</div>
-        </div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-task'" id="task"><i class="fa-solid fa-clipboard-list"></i> Task</div>
+            <div class="left-panel-taskbar" onclick="window.location.href='/my-notebook'"id="notebook"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="left-panel-taskbar justify-between" id="tag">
+                <div class="gap-[1rem] flex items-center"><i class="fa-solid fa-tags"></i> Tag (<c:out value="${tags.size()}"></c:out>)</div>
+                <i class="fa-solid fa-caret-down mr-7"></i>
+            </div>
+            <div id="tag-list"class="flex transition-[max-height] duration-400 flex-col max-h-0 overflow-auto">
+                <c:forEach items="${tags}" var="tag">
+                <div class="tag left-panel-taskbar text-sm pl-[5rem]">${tag.getTagName()}</div>
+                </c:forEach>
+            </div></div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div id="center-panel">
@@ -233,7 +238,7 @@
                     </div>
                 </div>
 
-                <div class="listnoteview">
+                <div class="listnoteview flex flex-col">
                     <c:forEach items="${notesWithTag}" var="item">
                         <c:if test = "${item.getNoteId() != activeNote.getNoteId()}">
                             <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2" data-id="${item.getNoteId()}">
@@ -241,36 +246,45 @@
                             <c:if test = "${item.getNoteId() == activeNote.getNoteId()}">
                                 <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2 selected" data-id="${item.getNoteId()}">
                             </c:if>
-                            <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+                        <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div></div>
                             <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
                                 <c:forEach items="${item.getTags()}" var="tag">
                                     <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
                                 </c:forEach>
                             </div>
                         </div>
+
                     </c:forEach>
                 </div>
 
-            </div>
+
+
             </div>
         </div>
     <div class="right-panel h-[85%] relative">
-        <div class="additional-info rounded-t-xl flex flex-row w-full text-white bg-[#141516] items-center justify-between">
+        <div class="additional-info rounded-t-xl flex flex-row justify-start w-full text-white bg-[#141516] items-center gap-2">
             <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
                 <div class="tag-section--title">Tags: </div>
                 <c:forEach items="${activeNote.getTags()}" var="tag">
-                    <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
+                    <div class="tag rounded-full px-2 border border-white " contenteditable ="true">${tag.getTagName()}</div>
                 </c:forEach>
-                <i class="fa-solid fa-circle-plus"></i>
             </div>
+            <i id="add-tag" class="fa-solid fa-circle-plus hover:cursor-pointer"></i>
 
         </div>
         <textarea id="note-taking" class="w-[100%] h-[95.5%]">
             ${activeNote.getTitle()}${activeNote.getContent()}
         </textarea>
-        <div id="save-btn" class=" rounded-full bg-[#8c63ff] w-[80px] h-[80px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
-            <i class="fa-regular fa-floppy-disk text-4xl text-white"></i>
+        <div id="save-btn" class="transition-[bottom] duration-500 rounded-full bg-[#2cd39d] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#0e8972] hover:cursor-pointer	">
+            <i class="fa-regular fa-floppy-disk text-3xl text-white"></i>
         </div>
+        <div id="delete-btn" class="transition-[bottom] duration-500 rounded-full bg-[#cb1234] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#890e25] hover:cursor-pointer	">
+            <i class="fa-solid fa-folder-minus text-3xl text-white"></i>
+        </div>
+        <div id="option-btn" class="transition-transform duration-500 rounded-full bg-[#8c63ff] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
+            <i class="fa-solid fa-ellipsis text-4xl text-white transition-transform"></i>
+        </div>
+
     </div>
 
 
@@ -296,7 +310,7 @@
             ],
             content_style:".mce-content-body{ background-color: #222224FF; color: #FFFFFF }"
         });
-
+        var tagsEle = document.querySelectorAll('.tags > .tag');
         var listNote = document.getElementsByClassName("note");
         for (var i=0; i<listNote.length; i++) {
             listNote[i].addEventListener('click', function (e){
@@ -305,26 +319,82 @@
             });
         }
 
+        document.addEventListener("click", function (e){
+            for (var i = 0; i < tagsEle.length; i++){
+                if (tagsEle[i].innerHTML == ""){
+                    tagsEle[i].remove();
+                }
+            }
+        }, true)
         document.getElementById("save-btn").addEventListener("click",function (e){
             var myContent = tinymce.get("note-taking").getContent();
             let firstBreaklineIndex = myContent.indexOf("\n");
             var title = myContent.slice(0,firstBreaklineIndex) || '<h1>YOUR TITLE HERE</h1>';
             var content = myContent.slice(firstBreaklineIndex+1) || '';
+            tagsEle = document.querySelectorAll('.tags > .tag');
+
+            var tags = [];
+            for (var i = 0; i < tagsEle.length; i++){
+                tags.push(tagsEle[i].innerHTML);
+
+            }
+
             fetch('http://localhost:8080/api/v1/note/update', {
                 method: 'PUT',
                 headers: {
+                    'Accept':"*",
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    "user-id": ${user.getId()},
                     "note-id": ${activeNote.getNoteId()},
                     "title": title,
-                    "content":content
+                    "content":content,
+                    "tags": tags
                     } )
             })
                 .then(response => response.json())
                 .then(response => console.log(JSON.stringify(response)))
         })
 
+        document.getElementById("delete-btn").addEventListener("click",function (e){
+            fetch('http://localhost:8080/api/v1/note/delete?noteId=${activeNote.getNoteId()}', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+
+                } )
+            })
+                .then(response => window.location.href="/my-note")
+        })
+
+        document.getElementById("option-btn").addEventListener("click", function (e){
+            e.target.classList.toggle("rotate-90");
+            document.getElementById("save-btn").classList.toggle("bottom-28");
+            document.getElementById("delete-btn").classList.toggle("bottom-48");
+        })
+
+        document.getElementById("tag").addEventListener("click", function (){
+            document.getElementById("tag-list").classList.toggle("max-h-[208px]");
+        })
+
+        document.getElementById("add-tag").addEventListener("click",function (){
+            let newTag = document.createElement("div");
+            newTag.classList.add(...["tag", "rounded-full", "px-2" ,"border","border-white"]);
+            newTag.contentEditable = "true";
+            newTag.innerHTML = "DefaultTag";
+            document.querySelector(".tags").appendChild(newTag);
+            tagsEle = document.querySelectorAll('.tags > .tag');
+            document.addEventListener("click", function (e){
+                for (var i = 0; i < tagsEle.length; i++){
+                    if (tagsEle[i].innerHTML == ""){
+                        tagsEle[i].remove();
+                    }
+                }
+            }, true)
+        })
     }
 
 

@@ -10,17 +10,19 @@ public class TaskAddDTO {
     private Timestamp startDate;
     private Timestamp endDate;
     private Integer userId;
+    private boolean isDone;
 
     public TaskAddDTO(){
 
     }
 
-    public TaskAddDTO(String title, String content, Timestamp startDate, Timestamp endDate, Integer userId){
+    public TaskAddDTO(String title, String content, Timestamp startDate, Timestamp endDate, Integer userId, boolean isDone){
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.userId = userId;
+        this.isDone = isDone;
     }
 
     @JsonProperty("title")
@@ -71,5 +73,15 @@ public class TaskAddDTO {
     @JsonProperty("user-id")
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    @JsonProperty("is-done")
+    public boolean isDone() {
+        return isDone;
+    }
+
+    @JsonProperty("is-done")
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }

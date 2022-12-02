@@ -51,4 +51,12 @@ public class Tag {
     public void setUser(User user){
         this.user = user;
     }
+
+    public Note getNote() {
+        return note;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
 }

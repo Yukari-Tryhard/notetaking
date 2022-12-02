@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT t FROM Tag t WHERE t.tagName = ?1")
-    User findByTagName(String tagName);
+    Tag findByTagName(String tagName);
 
     @Query(
             value = "SELECT * FROM tag t WHERE t.tag_name = ?1 AND t.user_id = ?2",

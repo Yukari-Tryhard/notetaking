@@ -7,6 +7,7 @@ import com.cnpmm.notetaking.model.User;
 import com.cnpmm.notetaking.repository.NoteRepository;
 import com.cnpmm.notetaking.repository.NotebookRepository;
 import com.cnpmm.notetaking.repository.UserRepository;
+import com.cnpmm.notetaking.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,39 +31,55 @@ public class NotebookService {
         this.userRepository = userRepository;
         this.notebookRepository = notebookRepository;
     }
-    public Notebook addNewNoteBook(Notebook notebook, Integer userId){
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null){
-            notebook.setUser(user);
-            return notebookRepository.save(notebook);
+    public ServiceResponse addNewNoteBook(Notebook notebook, Integer userId){
+        try{
+            User user = userRepository.findById(userId).orElse(null);
+            if (user != null){
+                notebook.setUser(user);
+                notebookRepository.save(notebook);
+                return new ServiceResponse(200,"save notebook successfully");
+            }
+            return new ServiceResponse(409,"user with id "+userId + " not found");
         }
-        return null;
+        catch (Exception ex){
+            return new ServiceResponse(500,ex.getMessage());
+        }
     }
 
-    public Notebook addNewNoteToNoteBook(Long noteId, Long notebookId){
-        Note note = noteRepository.findById(notebookId).orElse(null);
-        if (note != null){
+    public ServiceResponse addNewNoteToNoteBook(Long noteId, Long notebookId){
+        try{
+            Note note = noteRepository.findById(notebookId).orElse(null);
+            if (note != null){
+                Notebook notebook = notebookRepository.findById(notebookId).orElse(null);
+                if (notebook != null){
+                    if (!notebook.getNotes().contains(note) ){
+                        notebookRepository.AddNoteToNotebook(noteId, notebookId);
+                        return new ServiceResponse(200,"save notebook successfully");
+                    }
+                    return new ServiceResponse(200,"note already exits");
+                }
+                return new ServiceResponse(409,"notebook with id "+notebookId +  " is not exits");
+            }
+            return new ServiceResponse(409,"note with id "+noteId +  " is not exits");
+        }
+        catch (Exception ex){
+            return new ServiceResponse(500,ex.getMessage());
+        }
+    }
+
+    public ServiceResponse deleteNotebook(Long notebookId){
+        try{
             Notebook notebook = notebookRepository.findById(notebookId).orElse(null);
             if (notebook != null){
-                if (!notebook.getNotes().contains(note) ){
-                    notebookRepository.AddNoteToNotebook(noteId, notebookId);
-                    return notebook;
-                }
-                return null;
+                notebookRepository.delete(notebook);
+                notebookRepository.RemoveNotebookRelationship(notebookId);
+                return new ServiceResponse(200,"delete notebook with id " + notebook.getNotebookId() + "successfully");
             }
-            return null;
+            return new ServiceResponse(409,"notebook with id " + notebookId + " not found");
         }
-        return null;
-    }
-
-    public String deleteNotebook(Long notebookId){
-        Notebook notebook = notebookRepository.findById(notebookId).orElse(null);
-        if (notebook != null){
-            notebookRepository.delete(notebook);
-            notebookRepository.RemoveNotebookRelationship(notebookId);
-            return "delete notebook with id " + notebook.getNotebookId() + "success";
+        catch (Exception ex){
+            return new ServiceResponse(500,ex.getMessage());
         }
-        return "notebook with id " + notebookId + " not found";
     }
 
     public Collection<Notebook> findAllNotebookByUser(Integer userId){
@@ -73,16 +90,20 @@ public class NotebookService {
         return null;
     }
 
-    public String updateNotebook(Notebook notebook){
+    public ServiceResponse updateNotebook(Notebook notebook){
         try{
             Notebook existNotebook = notebookRepository.findById(notebook.getNotebookId()).orElse(null);
             if (existNotebook != null){
                 notebookRepository.UpdateNotebook(notebook.getNotebookId(), notebook.getNotebookName());
-                return "updated notebook has id " + notebook.getNotebookId();
+                return new ServiceResponse(200,"updated notebook has id " + notebook.getNotebookId());
             }
-            return "notebook has id " + notebook.getNotebookId() + " is not exist";
+             return new ServiceResponse(200,"notebook has id " + notebook.getNotebookId() + " is not exist");
         }catch (Exception ex){
-            return ex.getMessage();
+            return new ServiceResponse(500,ex.getMessage());
         }
+    }
+
+    public Notebook findById(Long notebookId) {
+        return notebookRepository.findById(notebookId).orElse(null);
     }
 }

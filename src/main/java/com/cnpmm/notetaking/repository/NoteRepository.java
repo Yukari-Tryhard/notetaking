@@ -44,4 +44,12 @@ public interface NoteRepository extends  JpaRepository<Note, Long>{
             nativeQuery = true
     )
     Collection<Note> findAllNoteWithTagByUser(Integer userId);
+
+    @Query(
+            value = "UPDATE tag t SET t.note_note_id = null WHERE t.note_note_id = ?1",
+            nativeQuery = true
+    )
+    @Modifying
+    @Transactional
+    void clearTag(Long noteId);
 }

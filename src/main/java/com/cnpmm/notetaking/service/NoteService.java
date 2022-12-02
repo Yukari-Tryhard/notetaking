@@ -27,24 +27,37 @@ public class NoteService {
         this.userRepository = userRepository;
     }
 
-    public Note addNewNote(Note note, String userId) {
-        User user = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
-        if (user != null){
-            note.setUser(user);
-            return noteRepository.save(note);
+    public ServiceResponse addNewNote(Note note, String userId) {
+        try{
+            User user = userRepository.findById(Integer.parseInt(userId)).orElseThrow(() -> new EntityNotFoundException("User Id: "+ userId + "not found"));
+            if (user != null){
+                note.setUser(user);
+                noteRepository.save(note);
+                return new ServiceResponse(200, "add note succesfully");
+            }
+            return new ServiceResponse(409,"user with id " + userId + " not found");
         }
-        return null;
+        catch (Exception ex)
+        {
+            return new ServiceResponse(500,ex.getMessage());
+        }
 
     }
 
-    public String deleteNote(Long noteId){
-        Note note = noteRepository.findById(noteId).orElse(null);
-        if (note != null){
-            noteRepository.delete(note);
-            noteRepository.RemoveNoteRelationship(noteId);
-            return "delete note with id " + note.getNoteId() + "success";
+    public ServiceResponse deleteNote(Long noteId){
+        try{
+            Note note = noteRepository.findById(noteId).orElse(null);
+            if (note != null){
+                noteRepository.delete(note);
+                noteRepository.RemoveNoteRelationship(noteId);
+                return new ServiceResponse(200,"delete note with id " + note.getNoteId() + "success");
+            }
+            return new ServiceResponse(409, "note with id " + noteId + " not found");
         }
-        return "note with id " + noteId + " not found";
+        catch (Exception ex)
+        {
+            return new ServiceResponse(500,ex.getMessage());
+        }
     }
     public Collection<Note> findAllNoteByUser(Integer userId){
         User user = userRepository.findById(userId).orElse(null);
@@ -58,7 +71,7 @@ public class NoteService {
         try{
             Note existNote = noteRepository.findById(note.getNoteId()).orElse(null);
             if (existNote != null){
-                noteRepository.UpdateNote(note.getNoteId(), note.getTitle(), note.getContent());
+                noteRepository.save(note);
                 return new ServiceResponse(200,"updated note has id " + note.getNoteId());
             }
             return new ServiceResponse(409,"note has id " + note.getNoteId() + " is not exist");
@@ -85,5 +98,9 @@ public class NoteService {
 
     public Note findById(Long noteId) {
         return noteRepository.findById(noteId).orElse(null);
+    }
+
+    public void clearTag(Long noteId){
+        noteRepository.clearTag(noteId);
     }
 }
