@@ -322,8 +322,6 @@
                     </div>
 
                 </c:forEach>
-            </div>
-        </div>
     </div>
         </div>
         <div class="recently">
@@ -387,6 +385,17 @@
 
 <script>
     function onReady(){
+
+        function deleteCookies() {
+            var allCookies = document.cookie.split(';');
+
+            // The "expire" attribute of every cookie is
+            // Set to "Thu, 01 Jan 1970 00:00:00 GMT"
+            for (var i = 0; i < allCookies.length; i++)
+                document.cookie = allCookies[i] + "=;expires="
+                    + new Date(0).toUTCString();
+        }
+
         document.getElementById("recently").addEventListener("click", function (event){
             var targetElement = event.target || event.srcElement;
             document.getElementById("upcoming-task").classList.remove("active-filter");
@@ -426,6 +435,11 @@
 
         document.getElementById("tag").addEventListener("click", function (){
             document.getElementById("tag-list").classList.toggle("max-h-[208px]");
+        })
+
+        document.getElementById("logout-btn").addEventListener("click", function (e){
+            deleteCookies();
+            window.location.href = "/login";
         })
     }
 

@@ -220,6 +220,8 @@
             </div></div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
+    <c:if test="${activeTask != null}">
+
     <div id="center-panel">
         <div style="display: block" class="center-panel-header">
 
@@ -248,65 +250,79 @@
                     <c:if test = "${item.getTaskId() != activeTask.getTaskId()}">
                     <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
                         </c:if>
-                    <c:if test = "${item.getTaskId() == activeTask.getTaskId()}">
-                    <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 selected items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
+                        <c:if test = "${item.getTaskId() == activeTask.getTaskId()}">
+                        <div style=" border-bottom: 1px inset #b3b3b3;" class="task w-full flex flex-row pl-4 py-2 selected items-center gap-2 hover:cursor-pointer" data-id="${item.getTaskId()}">
 
-                    </c:if>
-                        <c:if test = "${item.isDone() == 'true'}">
-                            <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="true"><i class="fa-solid fa-circle-check"></i></div>
-                        </c:if>
-                        <c:if test = "${item.isDone() != 'true'}">
-                            <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="false"><i class="fa-regular fa-circle"></i></div>
-                        </c:if>
+                            </c:if>
+                            <c:if test = "${item.isDone() == 'true'}">
+                                <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="true"><i class="fa-solid fa-circle-check"></i></div>
+                            </c:if>
+                            <c:if test = "${item.isDone() != 'true'}">
+                                <div class="task-check" data-id="${item.getTaskId()}" data-isCheck="false"><i class="fa-regular fa-circle"></i></div>
+                            </c:if>
                             <div class="task-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
 
                             <div class="task-due-day w-[50%] text-clip text-ellipsis">${item.getEndDate().toGMTString()}</div>
 
-                        </c:forEach>
-                    </div>
+                            </c:forEach>
+                        </div>
                 </div>
             </div>
+
         </div>
     </div>
     <div class="right-panel h-[85%] relative">
-            <div class="additional-info gap-2 rounded-t-xl flex flex-col w-full text-white bg-[#141516] items-start pt-2 pl-4 pb-4">
-                <div class="start-date flex flex-row gap-2">
-                    <div>Start Date: </div>
-                    <input id="start-date" type="datetime-local" class="text-white color-white" value="${activeTask.getStartDate()}">
-                </div>
-                <div class="end-date flex flex-row gap-2">
-                    <div>End Date: </div>
-                    <input id="end-date" type="datetime-local" class="text-white color-white" value="${activeTask.getEndDate()}">
-                </div>
+        <div class="additional-info gap-2 rounded-t-xl flex flex-col w-[90%] text-white bg-[#141516] items-start pt-2 pl-4 pb-4">
+            <div class="start-date flex flex-row gap-2">
+                <div>Start Date: </div>
+                <input id="start-date" type="datetime-local" class="text-white color-white" value="${activeTask.getStartDate()}">
+            </div>
+            <div class="end-date flex flex-row gap-2">
+                <div>End Date: </div>
+                <input id="end-date" type="datetime-local" class="text-white color-white" value="${activeTask.getEndDate()}">
+            </div>
 
-
-            </div>
-            <textarea id="note-taking" class="w-[100%] h-[95.5%]">
-                ${activeTask.getTitle()}${activeTask.getContent()}
-            </textarea>
-            <div id="save-btn" class="transition-[bottom] duration-500 rounded-full bg-[#2cd39d] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#0e8972] hover:cursor-pointer	">
-                <i class="fa-regular fa-floppy-disk text-3xl text-white"></i>
-            </div>
-            <div id="delete-btn" class="transition-[bottom] duration-500 rounded-full bg-[#cb1234] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#890e25] hover:cursor-pointer	">
-                <i class="fa-solid fa-folder-minus text-3xl text-white"></i>
-            </div>
-            <div id="option-btn" class="transition-transform duration-500 rounded-full bg-[#8c63ff] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
-                <i class="fa-solid fa-ellipsis text-4xl text-white transition-transform"></i>
-            </div>
 
         </div>
-</div>
+        <textarea id="note-taking" class="w-[100%] h-[95.5%]">
+                ${activeTask.getTitle()}${activeTask.getContent()}
+        </textarea>
+        <div id="save-btn" class="transition-[bottom] duration-500 rounded-full bg-[#2cd39d] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#0e8972] hover:cursor-pointer	">
+            <i class="fa-regular fa-floppy-disk text-3xl text-white"></i>
+        </div>
+        <div id="delete-btn" class="transition-[bottom] duration-500 rounded-full bg-[#cb1234] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#890e25] hover:cursor-pointer	">
+            <i class="fa-solid fa-folder-minus text-3xl text-white"></i>
+        </div>
+        <div id="option-btn" class="transition-transform duration-500 rounded-full bg-[#8c63ff] w-[60px] h-[60px] flex items-center justify-center absolute bottom-6 right-6 drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]	hover:bg-[#622bdb] hover:cursor-pointer	">
+            <i class="fa-solid fa-ellipsis text-4xl text-white transition-transform"></i>
+        </div>
 
+    </div>
+    </c:if>
+        <c:if test="${activeTask == null}">
+        <div class="h-[85%] w-[80%] text-center bg-[#141516] flex items-center justify-center text-4xl text-white rounded-xl">
+            You have no task
+        </div>
+        </c:if>
 </body>
 <script>
 
     function onReady(){
+        function deleteCookies() {
+            var allCookies = document.cookie.split(';');
+
+            // The "expire" attribute of every cookie is
+            // Set to "Thu, 01 Jan 1970 00:00:00 GMT"
+            for (var i = 0; i < allCookies.length; i++)
+                document.cookie = allCookies[i] + "=;expires="
+                    + new Date(0).toUTCString();
+        }
         tinymce.init({
             selector: 'textarea#note-taking',
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            width: '100%',
-            height: '95.5%',
+            width: '90%',
+            height: '90%',
             statusbar: false,
             menubar: false,
             tinycomments_mode: 'embedded',
@@ -388,6 +404,10 @@
                 }
             })
         }
+        document.getElementById("logout-btn").addEventListener("click", function (e){
+            deleteCookies();
+            window.location.href = "/login";
+        })
     }
 
 

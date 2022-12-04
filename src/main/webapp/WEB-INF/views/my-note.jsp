@@ -215,11 +215,11 @@
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
     <div id="center-panel">
-        <div style="display: block" class="center-panel-header">
+            <div style="display: block" class="center-panel-header">
 
             <div class="icon-note-and-note flex flex-row pl-4 pt-2">
-            <i style="font-size: 18px" class="fa-regular fa-note-sticky"></i>
-            <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Notes</h2>
+                <i style="font-size: 18px" class="fa-regular fa-note-sticky"></i>
+                <h2  style="font-size: 20px; margin-left: 5px; margin-top: -5px">Notes</h2>
 
             </div>
 
@@ -246,12 +246,12 @@
                             <c:if test = "${item.getNoteId() == activeNote.getNoteId()}">
                                 <div style=" border-bottom: 1px inset #b3b3b3;" class="note w-full flex flex-row pl-4 py-2 selected" data-id="${item.getNoteId()}">
                             </c:if>
-                        <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div></div>
-                            <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
-                                <c:forEach items="${item.getTags()}" var="tag">
+                        <div class="note-name w-[50%] text-clip text-ellipsis">${item.getTitle()}</div>
+                        <div class="note-tag w-[50%] overflow-hidden flex-nowrap flex flex-row gap-2">
+                              <c:forEach items="${item.getTags()}" var="tag">
                                     <div class="tag rounded-full px-2 border border-white  ">${tag.getTagName()}</div>
-                                </c:forEach>
-                            </div>
+                              </c:forEach>
+                        </div>
                         </div>
 
                     </c:forEach>
@@ -261,8 +261,9 @@
 
             </div>
         </div>
+            </div>
     <div class="right-panel h-[85%] relative">
-        <div class="additional-info rounded-t-xl flex flex-row justify-start w-full text-white bg-[#141516] items-center gap-2">
+        <div class="additional-info rounded-t-xl flex flex-row justify-start w-[90%] text-white bg-[#141516] items-center gap-2">
             <div class="tags flex flex-row  text-white py-2 px-4 gap-2 items-center">
                 <div class="tag-section--title">Tags: </div>
                 <c:forEach items="${activeNote.getTags()}" var="tag">
@@ -289,16 +290,26 @@
 
 
 </div>
-</div>
+    </div>
 </body>
 <script>
 
     function onReady(){
+        function deleteCookies() {
+            var allCookies = document.cookie.split(';');
+
+            // The "expire" attribute of every cookie is
+            // Set to "Thu, 01 Jan 1970 00:00:00 GMT"
+            for (var i = 0; i < allCookies.length; i++)
+                document.cookie = allCookies[i] + "=;expires="
+                    + new Date(0).toUTCString();
+        }
+
         tinymce.init({
             selector: 'textarea#note-taking',
             plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect',
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            width: '100%',
+            width: '90%',
             height: '95.5%',
             statusbar: false,
             menubar: false,
@@ -394,6 +405,10 @@
                     }
                 }
             }, true)
+        })
+        document.getElementById("logout-btn").addEventListener("click", function (e){
+            deleteCookies();
+            window.location.href = "/login";
         })
     }
 

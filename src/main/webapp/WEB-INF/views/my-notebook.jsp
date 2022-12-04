@@ -237,6 +237,7 @@
         </div>
         <button id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
     </div>
+    <c:if test = "${activeNotebook != null}">
     <div id="right-panel" class="justify-between flex flex-col">
         <div class="list-notebook w-full h-[25%] bg-[#141516] rounded-xl">
             <div class="list-notebook--filter flex flex-row justify-end pt-2 gap-2 items-center">
@@ -268,7 +269,12 @@
             </c:forEach>
         </div>
     </div>
-
+    </c:if>
+    <c:if test = "${activeNotebook == null}">
+        <div class="h-[85%] w-[80%] text-center bg-[#141516] flex items-center justify-center text-4xl text-white rounded-xl">
+            You have no notebook
+        </div>
+    </c:if>
 </div>
 <div id="overlay" class="absolute w-full hidden h-full bg-black z-10 top-0 left-0 opacity-40">
 </div>
@@ -292,6 +298,15 @@
 <script>
     console.log("onready")
     function onReady(){
+        function deleteCookies() {
+            var allCookies = document.cookie.split(';');
+
+            // The "expire" attribute of every cookie is
+            // Set to "Thu, 01 Jan 1970 00:00:00 GMT"
+            for (var i = 0; i < allCookies.length; i++)
+                document.cookie = allCookies[i] + "=;expires="
+                    + new Date(0).toUTCString();
+        }
 
         document.getElementById("new").addEventListener("click", function(){
             document.getElementById("overlay").classList.remove("hidden");
@@ -333,6 +348,10 @@
                 window.location.href = "/my-note/?note-id=" + noteId;
             });
         }
+        document.getElementById("logout-btn").addEventListener("click", function (e){
+            deleteCookies();
+            window.location.href = "/login";
+        })
         
     }
 

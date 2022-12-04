@@ -104,7 +104,12 @@ public class AppController {
             modelAndView.addObject("activeTask",taskService.findById(taskId));
         }
         else{
-            modelAndView.addObject("activeTask", tasksArray.get(0));
+            if (tasksArray.size() != 0){
+                modelAndView.addObject("activeTask", tasksArray.get(0));
+            }
+            else{
+                modelAndView.addObject("activeTask", null);
+            }
         }
         return modelAndView;
     }
@@ -126,7 +131,13 @@ public class AppController {
             modelAndView.addObject("activeNotebook",notebookService.findById(notebookId));
         }
         else{
-            modelAndView.addObject("activeNotebook", notebooksArray.get(0));
+            if(notebooksArray.size() != 0){
+                modelAndView.addObject("activeNotebook", notebooksArray.get(0));
+
+            }
+            else{
+                modelAndView.addObject("activeNotebook",null);
+            }
         }
         return modelAndView;
     }

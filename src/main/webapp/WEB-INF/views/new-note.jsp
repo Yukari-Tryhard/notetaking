@@ -244,6 +244,16 @@
 <script>
     function onReady(){
 
+        function deleteCookies() {
+            var allCookies = document.cookie.split(';');
+
+            // The "expire" attribute of every cookie is
+            // Set to "Thu, 01 Jan 1970 00:00:00 GMT"
+            for (var i = 0; i < allCookies.length; i++)
+                document.cookie = allCookies[i] + "=;expires="
+                    + new Date(0).toUTCString();
+        }
+
         function updateNoteHandlder(){
             var myContent = tinymce.get("note-taking").getContent();
             let firstBreaklineIndex = myContent.indexOf("\n");
@@ -342,6 +352,10 @@
         window.onbeforeunload = function(){
             updateNoteHandlder();
         };
+        document.getElementById("logout-btn").addEventListener("click", function (e){
+            deleteCookies();
+            window.location.href = "/login";
+        })
     }
 
 
